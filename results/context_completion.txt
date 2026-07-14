@@ -1,0 +1,16 @@
+baseline P(dog) in mask = 0.8635
+honest-removal P(dog) in mask = 0.0716
+cos(mean fill, surround) = 0.9394, cos(mean fill, far bg) = 0.9167
+
+[target_surround]
+  eps=4.0000  p_dog=0.9811  cos_to_ctx=0.8950  cos_to_removed_patch=0.6935  cls_to_removed=0.7845  cls_sim_dog=0.2797  cls_sim_couch=0.2702
+  eps=8.0000  p_dog=0.9860  cos_to_ctx=0.9151  cos_to_removed_patch=0.7105  cls_to_removed=0.7926  cls_sim_dog=0.2818  cls_sim_couch=0.2735
+  eps=16.0000  p_dog=0.9916  cos_to_ctx=0.9303  cos_to_removed_patch=0.7223  cls_to_removed=0.7859  cls_sim_dog=0.2811  cls_sim_couch=0.2709
+[target_text]
+  eps=4.0000  p_dog=0.4432  cos_to_ctx=0.6800  cos_to_removed_patch=0.5455  cls_to_removed=0.4814  cls_sim_dog=0.1058  cls_sim_couch=0.3299
+  eps=8.0000  p_dog=0.2788  cos_to_ctx=0.6751  cos_to_removed_patch=0.5505  cls_to_removed=0.4421  cls_sim_dog=0.0457  cls_sim_couch=0.3634
+  eps=16.0000  p_dog=0.2107  cos_to_ctx=0.6534  cos_to_removed_patch=0.5370  cls_to_removed=0.4022  cls_sim_dog=0.0008  cls_sim_couch=0.4116
+[target_img]
+  eps=4.0000  p_dog=0.5753  cos_to_ctx=0.7581  cos_to_removed_patch=0.6285  cls_to_removed=0.9868  cls_sim_dog=0.2153  cls_sim_couch=0.3010
+  eps=8.0000  p_dog=0.4235  cos_to_ctx=0.7902  cos_to_removed_patch=0.6771  cls_to_removed=0.9981  cls_sim_dog=0.2100  cls_sim_couch=0.3091
+  eps=16.0000  p_dog=0.3278  cos_to_ctx=0.7901  cos_to_removed_patch=0.6837  cls_to_removed=0.9992  cls_sim_dog=0.2104  cls_sim_couch=0.3122
