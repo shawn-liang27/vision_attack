@@ -1,9 +1,13 @@
-baseline P(dog) mean=0.8635 max=0.9996
-local (patch) eps=2 p_dog_mean=0.9513 p_dog_max=0.9993 patch_dog=0.1905 patch_couch=0.3065 cls_dog=0.2672 far_drift=0.0097 vlm_patch_drift=0.1965
-local (patch) eps=4 p_dog_mean=0.9406 p_dog_max=0.9978 patch_dog=0.1614 patch_couch=0.3228 cls_dog=0.2736 far_drift=0.0244 vlm_patch_drift=0.3299
-local (patch) eps=8 p_dog_mean=0.9474 p_dog_max=0.9981 patch_dog=0.1359 patch_couch=0.3357 cls_dog=0.2778 far_drift=0.0454 vlm_patch_drift=0.4332
-local (patch) eps=16 p_dog_mean=0.9444 p_dog_max=0.9975 patch_dog=0.1245 patch_couch=0.3813 cls_dog=0.2812 far_drift=0.0662 vlm_patch_drift=0.5508
-global (CLS) eps=2 p_dog_mean=0.6552 p_dog_max=0.9989 patch_dog=0.2302 patch_couch=0.2685 cls_dog=0.1765 far_drift=0.0166 vlm_patch_drift=0.2816
-global (CLS) eps=4 p_dog_mean=0.4432 p_dog_max=0.9991 patch_dog=0.2172 patch_couch=0.2631 cls_dog=0.1058 far_drift=0.0286 vlm_patch_drift=0.4357
-global (CLS) eps=8 p_dog_mean=0.2788 p_dog_max=0.9983 patch_dog=0.2117 patch_couch=0.2628 cls_dog=0.0457 far_drift=0.0364 vlm_patch_drift=0.5356
-global (CLS) eps=16 p_dog_mean=0.2107 p_dog_max=0.9507 patch_dog=0.2036 patch_couch=0.2620 cls_dog=0.0008 far_drift=0.0472 vlm_patch_drift=0.6120
+baseline P(dog) mean=0.7919 max=0.9969
+img-target (local) eps=2 p_dog_mean=0.8246 p_dog_max=0.9803 cos_to_target=0.6293 cls_dog=0.2772 far_drift=0.0105 vlm_patch_drift=0.1880
+img-target (local) eps=4 p_dog_mean=0.6743 p_dog_max=0.9601 cos_to_target=0.6741 cls_dog=0.2832 far_drift=0.0177 vlm_patch_drift=0.3146
+img-target (local) eps=8 p_dog_mean=0.4451 p_dog_max=0.8930 cos_to_target=0.7116 cls_dog=0.2810 far_drift=0.0248 vlm_patch_drift=0.4224
+img-target (local) eps=16 p_dog_mean=0.3598 p_dog_max=0.8386 cos_to_target=0.7322 cls_dog=0.2785 far_drift=0.0294 vlm_patch_drift=0.4692
+text (local) eps=2 p_dog_mean=0.1784 p_dog_max=0.9506 cos_to_target=0.5055 cls_dog=0.2428 far_drift=0.0220 vlm_patch_drift=0.3140
+text (local) eps=4 p_dog_mean=0.0467 p_dog_max=0.8807 cos_to_target=0.4966 cls_dog=0.2241 far_drift=0.0341 vlm_patch_drift=0.4923
+text (local) eps=8 p_dog_mean=0.0142 p_dog_max=0.7733 cos_to_target=0.4611 cls_dog=0.1982 far_drift=0.0448 vlm_patch_drift=0.6121
+text (local) eps=16 p_dog_mean=0.0083 p_dog_max=0.5596 cos_to_target=0.4167 cls_dog=0.1823 far_drift=0.0544 vlm_patch_drift=0.6985
+img-target (CLS) eps=2 p_dog_mean=0.7617 p_dog_max=0.9961 cos_to_target=0.5087 cls_dog=0.2572 far_drift=0.0112 vlm_patch_drift=0.2146
+img-target (CLS) eps=4 p_dog_mean=0.5856 p_dog_max=0.9980 cos_to_target=0.5021 cls_dog=0.2153 far_drift=0.0545 vlm_patch_drift=0.5248
+img-target (CLS) eps=8 p_dog_mean=0.5210 p_dog_max=0.9946 cos_to_target=0.5321 cls_dog=0.2100 far_drift=0.0846 vlm_patch_drift=0.7470
+img-target (CLS) eps=16 p_dog_mean=0.4643 p_dog_max=0.9841 cos_to_target=0.5519 cls_dog=0.2104 far_drift=0.0930 vlm_patch_drift=0.7811
