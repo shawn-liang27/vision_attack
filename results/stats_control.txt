@@ -1,0 +1,46 @@
+model=openai/clip-vit-base-patch16 input=448 grid=28x28  tag=control
+pair: original.png vs control_inpaint.png  mask: masks/control_mask.png
+pixel MAE (preprocessed): 0.0054
+
+Global CLS cosine(original, edited) = 0.9999
+prompt                        original    edited     delta
+a photo of a dog                0.2762    0.2769   +0.0007
+a dog on a couch                0.2855    0.2864   +0.0010
+an empty couch                  0.2496    0.2506   +0.0010
+a photo of a couch              0.2547    0.2558   +0.0011
+
+GT mask: 112 object patches, 98 ring, 574 far bg  (dense-map IoU vs GT: 0.015)
+mean patch drift (1-cos), standard tokens:
+  object region:   0.0271
+  boundary ring:   0.0062
+  far background:  0.0010
+  object/far ratio: 28.27x
+mean patch drift (1-cos), dense (MaskCLIP) features:
+  object region:   0.0380
+  boundary ring:   0.0108
+  far background:  0.0016
+
+drift vs grid-distance from mask (standard tokens):
+  d= 1: 0.0076  (n=50)
+  d= 2: 0.0048  (n=48)
+  d= 3: 0.0028  (n=42)
+  d= 4: 0.0034  (n=33)
+  d= 5: 0.0005  (n=36)
+  d= 6: 0.0006  (n=36)
+  d= 7: 0.0002  (n=37)
+  d= 8: 0.0003  (n=37)
+  d= 9: 0.0004  (n=30)
+  d=10: 0.0003  (n=30)
+  d=11: 0.0034  (n=28)
+  d=12: 0.0007  (n=28)
+  d=13: 0.0005  (n=29)
+  d=14: 0.0006  (n=29)
+  d=15: 0.0015  (n=28)
+  d=16: 0.0002  (n=28)
+  d=17: 0.0003  (n=28)
+  d=18: 0.0003  (n=28)
+  d=19: 0.0003  (n=29)
+  d=20: 0.0003  (n=28)
+  d=21: 0.0012  (n=9)
+
+residual P(dog) inside mask, dense features: orig mean=0.0801 max=0.7595 -> edited mean=0.0856 max=0.7729

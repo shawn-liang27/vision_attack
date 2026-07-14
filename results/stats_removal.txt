@@ -1,0 +1,37 @@
+model=openai/clip-vit-base-patch16 input=448 grid=28x28  tag=removal
+pair: original.png vs removed_aligned.png  mask: masks/dog_mask.png
+pixel MAE (preprocessed): 0.1656
+
+Global CLS cosine(original, edited) = 0.7295
+prompt                        original    edited     delta
+a photo of a dog                0.2762    0.2109   -0.0653
+a dog on a couch                0.2855    0.2600   -0.0255
+an empty couch                  0.2496    0.2890   +0.0395
+a photo of a couch              0.2547    0.3139   +0.0592
+
+GT mask: 112 object patches, 115 ring, 557 far bg  (dense-map IoU vs GT: 0.573)
+mean patch drift (1-cos), standard tokens:
+  object region:   0.4093
+  boundary ring:   0.2392
+  far background:  0.1173
+  object/far ratio: 3.49x
+mean patch drift (1-cos), dense (MaskCLIP) features:
+  object region:   0.4965
+  boundary ring:   0.2942
+  far background:  0.1234
+
+drift vs grid-distance from mask (standard tokens):
+  d= 1: 0.2960  (n=57)
+  d= 2: 0.1833  (n=58)
+  d= 3: 0.1575  (n=67)
+  d= 4: 0.1213  (n=66)
+  d= 5: 0.1091  (n=73)
+  d= 6: 0.1101  (n=59)
+  d= 7: 0.1081  (n=56)
+  d= 8: 0.1204  (n=59)
+  d= 9: 0.1174  (n=61)
+  d=10: 0.1205  (n=58)
+  d=11: 0.0915  (n=33)
+  d=12: 0.0814  (n=17)
+
+residual P(dog) inside mask, dense features: orig mean=0.8635 max=0.9996 -> edited mean=0.0716 max=0.6663

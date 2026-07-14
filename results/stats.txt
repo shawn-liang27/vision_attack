@@ -1,0 +1,26 @@
+model=openai/clip-vit-base-patch16  input=448x448  grid=28x28 (784 patches)
+pixel MAE between preprocessed images: 0.2077 (normalized units)
+
+Global CLS cosine(original, removed) = 0.7361
+
+Global image-text cosine similarities:
+prompt                    original   removed     delta
+a photo of a dog            0.2762    0.2101   -0.0661
+a dog on a couch            0.2855    0.2606   -0.0248
+an empty couch              0.2496    0.2863   +0.0367
+a photo of a couch          0.2547    0.3109   +0.0562
+an orange wall              0.2205    0.2378   +0.0173
+a window                    0.1906    0.2169   +0.0263
+
+Dog patches (softmax>0.5): 437 / 784
+mean patch drift (1-cos) inside dog region:  0.1613
+mean patch drift (1-cos) outside dog region: 0.2414
+ratio: 0.67x
+
+Mean text-similarity of DOG-REGION patches (before -> after removal):
+  a photo of a dog        0.2807 -> 0.2390
+  a photo of a couch      0.2444 -> 0.2600
+  a photo of a wall       0.2344 -> 0.2410
+  a photo of a window     0.2282 -> 0.2273
+
+max dog prob in removed image: 0.8279 (original: 0.9975)
