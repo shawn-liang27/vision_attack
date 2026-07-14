@@ -45,6 +45,11 @@ uv run python interpolation_sweep.py --tag removal
 #    is ~150/255 a property of CLIP geometry or just the unoptimized direction?
 uv run python pgd_attack.py --objective target_img --budgets 2,4,8,16,32,64,128 --iters 300
 uv run python pgd_attack.py --objective suppress    # untargeted dog suppression
+
+# 6. is the fill THIS specific background, and recoverable from context alone?
+#    steers masked patches toward the surrounding visible couch ring (no
+#    regenerated pixels), vs generic couch text, vs the real removed bg
+uv run python context_completion.py --budgets 4,8,16 --iters 300
 ```
 
 Outputs land in `results/`: `stats_<tag>.txt` and `patch_analysis_<tag>.png`.
