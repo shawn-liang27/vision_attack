@@ -209,8 +209,7 @@ def main():
                 eps=b,
                 p_dog=p_dog(dense_a)[obj_t].mean().item(),
                 cos_to_ctx=(patch_a[obj_t] @ ctx_target).mean().item(),
-                cos_to_removed_patch=(patch_a[obj_t] @ patch_r[obj_t]).mean().item()
-                if patch_a[obj_t].shape == patch_r[obj_t].shape else float("nan"),
+                cos_to_removed_patch=(patch_a[obj_t] * patch_r[obj_t]).sum(-1).mean().item(),
                 cls_to_removed=(cls_a @ cls_r).item(),
                 cls_sim_dog=(cls_a @ dog_txt).item(),
                 cls_sim_couch=(cls_a @ couch_txt).item(),
