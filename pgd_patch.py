@@ -108,6 +108,8 @@ def regions(mask_img):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--original", default="original.png")
+    ap.add_argument("--target", default="removed_aligned.png",
+                    help="dog-free target image (aligned); the image anchor")
     ap.add_argument("--mask", default="masks/dog_mask.png")
     ap.add_argument("--object", default="dog")
     ap.add_argument("--budgets", default="2,4,8,16")
@@ -116,7 +118,9 @@ def main():
     obj_name = args.object
 
     orig_img = Image.open(args.original).convert("RGB")
+    tgt_img = Image.open(args.target).convert("RGB")
     x0 = to_pixel01(orig_img)
+    x_tgt = to_pixel01(tgt_img)
     mask_img = Image.open(args.mask).convert("L")
     obj, far = regions(mask_img)
     obj_t = torch.from_numpy(obj.reshape(-1)).to(DEVICE)
@@ -136,6 +140,11 @@ def main():
 
     _, patch0 = embed_grad(x0)
     patch0 = patch0.detach()
+    # IMAGE ANCHOR: features of the aligned dog-free target scene
+    cls_tgt, _ = embed_grad(x_tgt)
+    cls_tgt = cls_tgt.detach()
+    dense_tgt, _ = embed_dense(x_tgt)
+    dense_tgt = dense_tgt.detach()
 
     def p_dog(dense):
         """held-out P(dog-group): softmax over synonym prompts, sum over dog terms."""
@@ -158,15 +167,16 @@ def main():
         return torch.clamp(x0 + delta.detach() * mask_pix, 0, 1)
 
     objectives = {
-        # LOCAL-DENSE: attack the localizing head a VLM is closest to (CORRECT target)
-        "local dense": lambda cls, patch, dense:
+        # IMAGE ANCHOR (the sensible one): match dog-region dense tokens to the
+        # aligned dog-free target's tokens at the SAME positions. No text, no crops.
+        "img-target (local)": lambda cls, patch, dense:
+            -(dense[obj_t] * dense_tgt[obj_t]).sum(-1).mean(),
+        # TEXT ANCHOR (contrast): suppress "dog"/promote "couch" on the same head
+        "text (local)": lambda cls, patch, dense:
             (dense[obj_t] @ dog_txt).mean() - (dense[obj_t] @ couch_txt).mean(),
-        # LOCAL-STD: standard final-layer patch tokens (the poorly-localizing head)
-        "local std": lambda cls, patch, dense:
-            (patch[obj_t] @ dog_txt).mean() - (patch[obj_t] @ couch_txt).mean(),
-        # GLOBAL: CLS (the wrong target for VLMs, kept for contrast)
-        "global (CLS)": lambda cls, patch, dense:
-            (cls @ dog_txt) - (cls @ couch_txt),
+        # IMAGE ANCHOR on CLS (global, for contrast)
+        "img-target (CLS)": lambda cls, patch, dense:
+            -(cls @ cls_tgt),
     }
 
     @torch.no_grad()
@@ -180,8 +190,7 @@ def main():
         return dict(
             p_dog_mean=pv[obj_t].mean().item(),
             p_dog_max=pv[obj_t].max().item(),
-            patch_dog=(patch[obj_t] @ dog_txt).mean().item(),
-            patch_couch=(patch[obj_t] @ couch_txt).mean().item(),
+            cos_to_target=(dense[obj_t] * dense_tgt[obj_t]).sum(-1).mean().item(),
             cls_dog=(cls @ dog_txt).item(),
             far_drift=(1 - (patch[far_t] * patch0[far_t]).sum(-1)).mean().item(),
             vlm_patch_drift=vlm_drift,
@@ -196,9 +205,9 @@ def main():
             x_adv = pgd(lf, b / 255.0)
             m, heat = evaluate(x_adv)
             rows.setdefault(name, []).append((b, m))
-            print(f"{name:<14} eps={b:>4.0f}/255  P({obj_name}) mean={m['p_dog_mean']:.3f} "
-                  f"max={m['p_dog_max']:.3f}  patch_dog={m['patch_dog']:.3f} "
-                  f"patch_couch={m['patch_couch']:.3f}  far_drift={m['far_drift']:.3f}")
+            print(f"{name:<18} eps={b:>4.0f}/255  P({obj_name}) mean={m['p_dog_mean']:.3f} "
+                  f"max={m['p_dog_max']:.3f}  cos->target={m['cos_to_target']:.3f}  "
+                  f"far_drift={m['far_drift']:.3f}")
             if b == 8:
                 frames[name] = (x_adv.squeeze(0).permute(1, 2, 0).cpu().numpy(), heat)
 
