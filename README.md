@@ -40,6 +40,11 @@ uv run python clip_patch_experiment.py --edited control_inpaint.png \
 # 4. interpolation sweep: scale the removal delta like an adversarial budget,
 #    x_t = original + t*(removed - original), and track patch tokens vs t
 uv run python interpolation_sweep.py --tag removal
+
+# 5. white-box PGD on CLIP vs the interpolation oracle at matched L_inf:
+#    is ~150/255 a property of CLIP geometry or just the unoptimized direction?
+uv run python pgd_attack.py --objective target_img --budgets 2,4,8,16,32,64,128 --iters 300
+uv run python pgd_attack.py --objective suppress    # untargeted dog suppression
 ```
 
 Outputs land in `results/`: `stats_<tag>.txt` and `patch_analysis_<tag>.png`.
