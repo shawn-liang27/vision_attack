@@ -55,6 +55,10 @@ uv run python context_completion.py --budgets 4,8,16 --iters 300
 #    Q1 attention-ablated object-free CLS (no patch attends to the object)
 #    Q2 generic couch anchors, swept by set size (genericity vs specificity)
 uv run python background_target.py --budgets 8,16 --iters 200 --anchors couch_anchors/
+
+# 8. LOCAL patch-token camouflage (VLM-faithful) vs global CLS attack:
+#    VLMs read the patch grid, not CLS -- attack the dog-region patch tokens
+uv run python pgd_patch.py --budgets 2,4,8,16 --iters 300
 ```
 
 Outputs land in `results/`: `stats_<tag>.txt` and `patch_analysis_<tag>.png`.
