@@ -50,6 +50,11 @@ uv run python pgd_attack.py --objective suppress    # untargeted dog suppression
 #    steers masked patches toward the surrounding visible couch ring (no
 #    regenerated pixels), vs generic couch text, vs the real removed bg
 uv run python context_completion.py --budgets 4,8,16 --iters 300
+
+# 7. generation-free background targets:
+#    Q1 attention-ablated object-free CLS (no patch attends to the object)
+#    Q2 generic couch anchors, swept by set size (genericity vs specificity)
+uv run python background_target.py --budgets 8,16 --iters 200 --anchors couch_anchors/
 ```
 
 Outputs land in `results/`: `stats_<tag>.txt` and `patch_analysis_<tag>.png`.
