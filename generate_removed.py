@@ -41,22 +41,41 @@ def square_crop_around_mask(mask, margin=1.5):
     return cx - half, cy - half, cx + half, cy + half
 
 
-def shift_mask_to_background(mask):
-    """Translate the object mask to a non-overlapping background spot (control)."""
+def shift_mask_to_background(mask, protect, shift=None, border=8):
+    """Translate the object mask, whole, to a background spot (control condition).
+
+    The shifted mask must lie fully inside the frame (minus `border`) and must
+    not touch `protect` (the dilated object region). With `shift` given, that
+    exact offset is validated; otherwise all grid placements are searched and
+    the farthest valid one from the object is used.
+    """
     H, W = mask.shape
     ys, xs = np.nonzero(mask)
-    h_obj, w_obj = ys.max() - ys.min(), xs.max() - xs.min()
-    for dx, dy in [(int(W * 0.3), -int(H * 0.15)), (-int(W * 0.3), -int(H * 0.15)),
-                   (int(W * 0.35), 0), (-int(W * 0.35), 0)]:
-        ny, nx = ys + dy, xs + dx
-        ok = (ny >= 0) & (ny < H) & (nx >= 0) & (nx < W)
-        if ok.mean() < 0.98:
-            continue
+    t, b, l, r = ys.min(), ys.max(), xs.min(), xs.max()
+
+    def place(dy, dx):
+        if t + dy < border or b + dy >= H - border or l + dx < border or r + dx >= W - border:
+            return None
         shifted = np.zeros_like(mask)
-        shifted[ny[ok], nx[ok]] = True
-        if not (shifted & mask).any():
-            return shifted
-    raise SystemExit("could not place control mask without overlapping the object")
+        shifted[ys + dy, xs + dx] = True
+        return None if (shifted & protect).any() else shifted
+
+    if shift is not None:
+        dx, dy = shift
+        placed = place(dy, dx)
+        if placed is None:
+            raise SystemExit(f"--control-shift ({dx},{dy}) is out of frame or overlaps the object")
+        return placed
+
+    best, best_d2 = None, -1
+    for dy in range(border - t, H - border - b, max(H // 32, 1)):
+        for dx in range(border - l, W - border - r, max(W // 32, 1)):
+            placed = place(dy, dx)
+            if placed is not None and dy * dy + dx * dx > best_d2:
+                best, best_d2 = placed, dy * dy + dx * dx
+    if best is None:
+        raise SystemExit("no in-frame, non-overlapping placement found for the control mask")
+    return best
 
 
 def main():
@@ -64,7 +83,8 @@ def main():
     ap.add_argument("--image", default="original.png")
     ap.add_argument("--mask", default="masks/dog_mask.png")
     ap.add_argument("--out", default="removed_aligned.png")
-    ap.add_argument("--prompt", default="an empty couch in a living room, fabric cushions")
+    ap.add_argument("--prompt", default=None,
+                    help="inpaint prompt; default depends on mode (removal vs control)")
     ap.add_argument("--negative", default="dog, animal, pet, person, object")
     ap.add_argument("--dilate", type=int, default=24, help="mask dilation in px (covers shadows/fur edges)")
     ap.add_argument("--steps", type=int, default=40)
@@ -72,17 +92,30 @@ def main():
     ap.add_argument("--control", action="store_true",
                     help="inpaint a shifted copy of the mask on background instead")
     ap.add_argument("--control-mask-out", default="masks/control_mask.png")
+    ap.add_argument("--control-shift", default=None, metavar="DX,DY",
+                    help="manual control-mask offset in px (e.g. '-700,-150'); default: auto search")
     args = ap.parse_args()
+
+    if args.prompt is None:
+        args.prompt = ("a living room interior" if args.control
+                       else "an empty couch in a living room, fabric cushions")
 
     image = Image.open(args.image).convert("RGB")
     W, H = image.size
     mask = np.array(Image.open(args.mask).convert("L")) > 127
 
     if args.control:
-        mask = shift_mask_to_background(mask)
+        shift = None
+        if args.control_shift:
+            dx, dy = (int(v) for v in args.control_shift.split(","))
+            shift = (dx, dy)
+        protect = binary_dilation(mask, iterations=args.dilate * 2)
+        mask = shift_mask_to_background(mask, protect, shift=shift)
         os.makedirs(os.path.dirname(args.control_mask_out) or ".", exist_ok=True)
         Image.fromarray(mask.astype(np.uint8) * 255).save(args.control_mask_out)
-        print(f"saved control mask -> {args.control_mask_out}")
+        ys, xs = np.nonzero(mask)
+        print(f"saved control mask -> {args.control_mask_out}  "
+              f"(bbox x=[{xs.min()},{xs.max()}] y=[{ys.min()},{ys.max()}])")
 
     mask_dil = binary_dilation(mask, iterations=args.dilate)
 
