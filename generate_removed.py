@@ -94,6 +94,9 @@ def main():
     ap.add_argument("--control-mask-out", default="masks/control_mask.png")
     ap.add_argument("--control-shift", default=None, metavar="DX,DY",
                     help="manual control-mask offset in px (e.g. '-700,-150'); default: auto search")
+    ap.add_argument("--external", default=None, metavar="EDITED.png",
+                    help="skip diffusion: composite this externally-edited image (e.g. Gemini) "
+                         "through the dilated mask instead")
     args = ap.parse_args()
 
     if args.prompt is None:
@@ -118,6 +121,25 @@ def main():
               f"(bbox x=[{xs.min()},{xs.max()}] y=[{ys.min()},{ys.max()}])")
 
     mask_dil = binary_dilation(mask, iterations=args.dilate)
+
+    if args.external:
+        ext = Image.open(args.external).convert("RGB")
+        if ext.size != image.size:
+            print(f"WARNING: resizing external edit {ext.size} -> {image.size}; "
+                  "check the mask seam visually in the output")
+            ext = ext.resize(image.size, Image.LANCZOS)
+        orig_np, ext_np = np.array(image), np.array(ext)
+        # diagnostic: how much did the external editor change OUTSIDE the mask?
+        out_mae = np.abs(orig_np[~mask_dil].astype(np.int16)
+                         - ext_np[~mask_dil].astype(np.int16)).mean()
+        print(f"external edit, outside-mask MAE vs original: {out_mae:.2f}/255 "
+              f"({'ok' if out_mae < 3 else 'LARGE — editor changed the whole frame'})")
+        out_np = orig_np.copy()
+        out_np[mask_dil] = ext_np[mask_dil]
+        Image.fromarray(out_np).save(args.out)
+        print(f"saved {args.out}  ({W}x{H}, {mask_dil.mean():.1%} of pixels replaced, "
+              "composited from external edit)")
+        return
 
     l, t, r, b = square_crop_around_mask(mask_dil)
     crop_img = image.crop((l, t, r, b)).resize((WORK, WORK), Image.LANCZOS)

@@ -22,6 +22,12 @@ uv run python generate_mask.py --image original.png --prompt dog --out masks/dog
 uv run python generate_removed.py --image original.png --mask masks/dog_mask.png \
     --out removed_aligned.png --prompt "an empty couch in a living room, fabric cushions"
 
+# 2a-alt. if SDXL hallucinates an object in the hole (it's a replacement, not a removal),
+# composite an externally-edited image (e.g. Gemini) through the mask instead —
+# alignment stays guaranteed because only masked pixels are taken from the edit
+uv run python generate_removed.py --image original.png --mask masks/dog_mask.png \
+    --out removed_aligned.png --external gemini_removed.png
+
 # 2b. control: inpaint an equal-shape background region (drift from inpainting alone)
 uv run python generate_removed.py --image original.png --mask masks/dog_mask.png \
     --out control_inpaint.png --control
