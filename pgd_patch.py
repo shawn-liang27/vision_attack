@@ -196,6 +196,18 @@ def main():
             vlm_patch_drift=vlm_drift,
         ), pv.reshape(GRID, GRID).cpu().numpy()
 
+    def save_image(x, path):
+        arr = (x.detach().squeeze(0).permute(1, 2, 0).clamp(0, 1).cpu().numpy() * 255) \
+            .round().astype(np.uint8)
+        Image.fromarray(arr).save(path)
+
+    def slug(name):
+        return name.replace(" ", "_").replace("(", "").replace(")", "").replace("-", "_")
+
+    img_dir = "results/adv_images"
+    os.makedirs(img_dir, exist_ok=True)
+    save_image(x0, f"{img_dir}/baseline.png")
+
     base, base_heat = evaluate(x0)
     print(f"baseline: P({obj_name}) mean={base['p_dog_mean']:.3f} max={base['p_dog_max']:.3f}")
     budgets = [float(b) for b in args.budgets.split(",")]
@@ -205,6 +217,8 @@ def main():
             x_adv = pgd(lf, b / 255.0)
             m, heat = evaluate(x_adv)
             rows.setdefault(name, []).append((b, m))
+            # save the actual manipulated image the model would ingest
+            save_image(x_adv, f"{img_dir}/{slug(name)}_eps{int(b)}.png")
             print(f"{name:<18} eps={b:>4.0f}/255  P({obj_name}) mean={m['p_dog_mean']:.3f} "
                   f"max={m['p_dog_max']:.3f}  cos->target={m['cos_to_target']:.3f}  "
                   f"far_drift={m['far_drift']:.3f}")
