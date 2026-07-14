@@ -121,6 +121,9 @@ def main():
     tgt_img = Image.open(args.target).convert("RGB")
     x0 = to_pixel01(orig_img)
     x_tgt = to_pixel01(tgt_img)
+    W0, H0 = orig_img.size  # full-res dims, for un-squashed output
+    orig_full = torch.from_numpy(np.asarray(orig_img, np.float32) / 255) \
+        .permute(2, 0, 1).unsqueeze(0).to(DEVICE)
     mask_img = Image.open(args.mask).convert("L")
     obj, far = regions(mask_img)
     obj_t = torch.from_numpy(obj.reshape(-1)).to(DEVICE)
@@ -197,8 +200,12 @@ def main():
         ), pv.reshape(GRID, GRID).cpu().numpy()
 
     def save_image(x, path):
-        arr = (x.detach().squeeze(0).permute(1, 2, 0).clamp(0, 1).cpu().numpy() * 255) \
-            .round().astype(np.uint8)
+        # composite the (squashed, mask-confined) perturbation back onto the
+        # full-resolution original: correct aspect ratio, only dog region changes
+        delta = x.detach() - x0
+        delta_up = F.interpolate(delta, size=(H0, W0), mode="bicubic", align_corners=False)
+        out = (orig_full + delta_up).clamp(0, 1)
+        arr = (out.squeeze(0).permute(1, 2, 0).cpu().numpy() * 255).round().astype(np.uint8)
         Image.fromarray(arr).save(path)
 
     def slug(name):
