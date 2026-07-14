@@ -76,6 +76,21 @@ def embed_dense(x01):
     return F.normalize(dense[:, 1:], dim=-1).squeeze(0), F.normalize(out.hidden_states[-2][:, 1:], dim=-1).squeeze(0)
 
 
+def dense_grad(x01):
+    """Differentiable dense (MaskCLIP) patch features -- the localizing head a
+    VLM projector is closest to. Same math as embed_dense, grad enabled."""
+    vm = model.vision_model
+    out = vm(clip_normalize(x01), interpolate_pos_encoding=True, output_hidden_states=True)
+    layer = vm.encoder.layers[-1]
+    h = out.hidden_states[-2]
+    x = layer.layer_norm1(h)
+    x = layer.self_attn.out_proj(layer.self_attn.v_proj(x))
+    h = h + x
+    h = h + layer.mlp(layer.layer_norm2(h))
+    dense = model.visual_projection(vm.post_layernorm(h))
+    return F.normalize(dense[:, 1:], dim=-1).squeeze(0)
+
+
 @torch.no_grad()
 def embed_texts(prompts):
     tok = processor(text=prompts, return_tensors="pt", padding=True).to(DEVICE)
@@ -110,14 +125,22 @@ def main():
         mask_img.resize((RES, RES), Image.NEAREST)) > 127, iterations=2).astype(np.float32)) \
         .view(1, 1, RES, RES).to(DEVICE)
 
-    loc_txt = embed_texts([f"a photo of a {obj_name}", "a photo of a couch",
-                           "a photo of a wall", "a photo of a window"])
-    cls_txt = embed_texts([f"a photo of a {obj_name}", "a photo of a couch"])
-    dog_txt, couch_txt = cls_txt[0], cls_txt[1]
+    # ATTACK prompts (used to build the loss)
+    dog_txt, couch_txt = embed_texts([f"a photo of a {obj_name}", "a photo of a couch"])
+    # HELD-OUT measurement prompts (synonyms) -- so a P(dog) drop cannot be
+    # explained by overfitting the single attack prompt vector
+    meas_dog = ["a corgi", "a puppy", "a dog sitting on a sofa"]
+    meas_bg = ["an empty sofa", "a cushion", "living room furniture", "a bare couch"]
+    meas_txt = embed_texts(meas_dog + meas_bg)
+    nd = len(meas_dog)
 
     _, patch0 = embed_grad(x0)
     patch0 = patch0.detach()
-    p_dog = lambda dense: ((dense @ loc_txt.T) * 100).softmax(-1)[:, 0]
+
+    def p_dog(dense):
+        """held-out P(dog-group): softmax over synonym prompts, sum over dog terms."""
+        logits = (dense @ meas_txt.T) * 100
+        return logits.softmax(-1)[:, :nd].sum(-1)
 
     def pgd(loss_fn, eps):
         step = 2.5 * eps / args.iters
@@ -125,7 +148,8 @@ def main():
         for _ in range(args.iters):
             x = torch.clamp(x0 + delta * mask_pix, 0, 1)
             cls, patch = embed_grad(x)
-            loss = loss_fn(cls, patch)
+            dense = dense_grad(x)
+            loss = loss_fn(cls, patch, dense)
             g, = torch.autograd.grad(loss, delta)
             with torch.no_grad():
                 delta -= step * g.sign()
@@ -134,11 +158,14 @@ def main():
         return torch.clamp(x0 + delta.detach() * mask_pix, 0, 1)
 
     objectives = {
-        # LOCAL: suppress dog / promote couch on the dog-region PATCH tokens
-        "local (patch)": lambda cls, patch:
+        # LOCAL-DENSE: attack the localizing head a VLM is closest to (CORRECT target)
+        "local dense": lambda cls, patch, dense:
+            (dense[obj_t] @ dog_txt).mean() - (dense[obj_t] @ couch_txt).mean(),
+        # LOCAL-STD: standard final-layer patch tokens (the poorly-localizing head)
+        "local std": lambda cls, patch, dense:
             (patch[obj_t] @ dog_txt).mean() - (patch[obj_t] @ couch_txt).mean(),
-        # GLOBAL: same but on CLS (for contrast -- the wrong target for VLMs)
-        "global (CLS)": lambda cls, patch:
+        # GLOBAL: CLS (the wrong target for VLMs, kept for contrast)
+        "global (CLS)": lambda cls, patch, dense:
             (cls @ dog_txt) - (cls @ couch_txt),
     }
 
@@ -184,32 +211,35 @@ def main():
                         " ".join(f"{k}={v:.4f}" for k, v in m.items()) + "\n")
 
     # ---- figure ---------------------------------------------------------------
-    fig = plt.figure(figsize=(18, 9))
-    gs = fig.add_gridspec(2, 4)
-    c = {"local (patch)": "tab:blue", "global (CLS)": "tab:orange"}
+    n = len(objectives)
+    fig = plt.figure(figsize=(6 * max(n, 2), 9))
+    gs = fig.add_gridspec(2, n)
+    palette = ["tab:blue", "tab:orange", "tab:green", "tab:red"]
+    c = {name: palette[i % len(palette)] for i, name in enumerate(objectives)}
 
-    ax = fig.add_subplot(gs[0, 0:2])
+    ax = fig.add_subplot(gs[0, 0:max(1, n // 2)])
     for name, rr in rows.items():
         ax.plot([b for b, _ in rr], [m["p_dog_mean"] for _, m in rr], "o-", color=c[name], label=name + " mean")
         ax.plot([b for b, _ in rr], [m["p_dog_max"] for _, m in rr], "s--", color=c[name], alpha=0.6, label=name + " max")
     ax.axhline(base["p_dog_mean"], ls=":", c="gray", label="baseline")
-    ax.set_xlabel("L_inf (/255)"); ax.set_ylabel(f'dense P("{obj_name}") in mask (independent probe)')
-    ax.set_title("local vs global attack: does the VLM still see the dog?"); ax.legend(fontsize=8)
+    ax.set_xlabel("L_inf (/255)"); ax.set_ylabel(f'held-out P("{obj_name}") in mask')
+    ax.set_title("does an INDEPENDENT probe still see the dog?"); ax.legend(fontsize=8)
 
-    ax = fig.add_subplot(gs[0, 2:4])
+    ax = fig.add_subplot(gs[0, max(1, n // 2):n])
     for name, rr in rows.items():
         ax.plot([b for b, _ in rr], [m["vlm_patch_drift"] for _, m in rr], "o-", color=c[name], label=name)
     ax.set_xlabel("L_inf (/255)"); ax.set_ylabel("penultimate patch drift (VLM tap)")
     ax.set_title("change in the tokens a VLM projector consumes"); ax.legend(fontsize=8)
 
     for i, (name, (img, heat)) in enumerate(frames.items()):
-        ax = fig.add_subplot(gs[1, i * 2:i * 2 + 2])
+        ax = fig.add_subplot(gs[1, i])
         ax.imshow(np.clip(img, 0, 1))
         ax.imshow(np.kron(heat, np.ones((PATCH, PATCH))), cmap="jet", alpha=0.5, vmin=0, vmax=1)
-        ax.set_title(f'{name}  eps=8/255  ->  P("{obj_name}") heatmap', fontsize=10)
+        ax.set_title(f'{name} eps=8 -> P("{obj_name}")', fontsize=9)
         ax.set_xticks([]); ax.set_yticks([])
 
-    fig.suptitle("local patch camouflage (VLM-faithful) vs global CLS attack", fontsize=14)
+    fig.suptitle("local patch camouflage: attacking the localizing head vs std tokens vs CLS "
+                 "(held-out probe)", fontsize=13)
     fig.tight_layout()
     fig.savefig("results/pgd_patch.png", dpi=130)
     print("\nsaved results/pgd_patch.{txt,png}")
