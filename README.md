@@ -36,6 +36,10 @@ uv run python generate_removed.py --image original.png --mask masks/dog_mask.png
 uv run python clip_patch_experiment.py --edited removed_aligned.png --tag removal
 uv run python clip_patch_experiment.py --edited control_inpaint.png \
     --mask masks/control_mask.png --tag control
+
+# 4. interpolation sweep: scale the removal delta like an adversarial budget,
+#    x_t = original + t*(removed - original), and track patch tokens vs t
+uv run python interpolation_sweep.py --tag removal
 ```
 
 Outputs land in `results/`: `stats_<tag>.txt` and `patch_analysis_<tag>.png`.
