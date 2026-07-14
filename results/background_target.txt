@@ -1,0 +1,13 @@
+baseline P(dog)=0.8635  honest-removal P(dog)=0.0716
+ablate (no gen)      eps=   8/255  P(dog)=0.606  CLS->removed=0.860  couch=0.279  dog=0.235
+ablate (no gen)      eps=  16/255  P(dog)=0.531  CLS->removed=0.869  couch=0.282  dog=0.234
+generic text         eps=   8/255  P(dog)=0.268  CLS->removed=0.455  couch=0.350  dog=0.043
+generic text         eps=  16/255  P(dog)=0.205  CLS->removed=0.395  couch=0.396  dog=0.006
+real removed (gen)   eps=   8/255  P(dog)=0.425  CLS->removed=0.998  couch=0.310  dog=0.211
+real removed (gen)   eps=  16/255  P(dog)=0.334  CLS->removed=0.999  couch=0.310  dog=0.207
+  k=1   P(dog)=0.330  CLS->removed=0.778  couch=0.299  cos(centroid,removed)=0.718
+  k=2   P(dog)=0.308  CLS->removed=0.810  couch=0.292  cos(centroid,removed)=0.756
+  k=4   P(dog)=0.336  CLS->removed=0.796  couch=0.305  cos(centroid,removed)=0.758
+  k=8   P(dog)=0.287  CLS->removed=0.812  couch=0.298  cos(centroid,removed)=0.783
+  k=16  P(dog)=0.328  CLS->removed=0.808  couch=0.294  cos(centroid,removed)=0.768
+  k=20  P(dog)=0.338  CLS->removed=0.807  couch=0.294  cos(centroid,removed)=0.769
