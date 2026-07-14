@@ -82,7 +82,10 @@ def embed(pixel_values):
 @torch.no_grad()
 def embed_texts(prompts):
     tok = processor(text=prompts, return_tensors="pt", padding=True).to(DEVICE)
-    return F.normalize(model.get_text_features(**tok), dim=-1)
+    # explicit text tower + projection: get_text_features returns a tensor in
+    # transformers v4 but a model-output object in v5
+    pooled = model.text_model(**tok).pooler_output
+    return F.normalize(model.text_projection(pooled), dim=-1)
 
 
 def mask_to_grid(mask_img):
