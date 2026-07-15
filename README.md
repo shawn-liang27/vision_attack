@@ -58,7 +58,12 @@ uv run python background_target.py --budgets 8,16 --iters 200 --anchors couch_an
 
 # 8. LOCAL patch-token camouflage (VLM-faithful) vs global CLS attack:
 #    VLMs read the patch grid, not CLS -- attack the dog-region patch tokens
+#    saves the manipulated images to results/adv_images/
 uv run python pgd_patch.py --budgets 2,4,8,16 --iters 300
+
+# 9. transfer test: feed the saved adv images to real ~7B VLMs, ask if the
+#    dog is still visible (the non-circular judge). Gemini saw it in all.
+uv run python vlm_eval.py   # Qwen2-VL-7B + LLaVA-1.6-7B by default
 ```
 
 Outputs land in `results/`: `stats_<tag>.txt` and `patch_analysis_<tag>.png`.
