@@ -64,6 +64,16 @@ uv run python pgd_patch.py --budgets 2,4,8,16 --iters 300
 # 9. transfer test: feed the saved adv images to real ~7B VLMs, ask if the
 #    dog is still visible (the non-circular judge). Gemini saw it in all.
 uv run python vlm_eval.py   # Qwen2-VL-7B + LLaVA-1.6-7B by default
+
+# 9b. why it failed: does the attack survive save/reload + resize on the SAME
+#     CLIP? (it dies on resize -> resolution fragility, not surrogates)
+uv run python verify_attack.py
+
+# 10. correct method: resize-robust (EOT) white-box attack on the target VLM's
+#     OWN encoder at its native resolution (LLaVA tower = CLIP ViT-L/14-336)
+uv run python pgd_vlm_encoder.py --budgets 8,16 --iters 250 --eot 8
+uv run python vlm_eval.py --images-dir results/adv_images_vlm \
+    --models llava-hf/llava-v1.6-mistral-7b-hf
 ```
 
 Outputs land in `results/`: `stats_<tag>.txt` and `patch_analysis_<tag>.png`.
