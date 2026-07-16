@@ -150,7 +150,17 @@ def main():
             .round().astype(np.uint8)
         Image.fromarray(arr).save(path)
 
+    def save_square(x, path):
+        # EXACT res x res tensor the encoder saw -- for the same-encoder VLM test,
+        # so the VLM's (near no-op) resize doesn't resample the perturbation away
+        arr = (x.detach().squeeze(0).permute(1, 2, 0).clamp(0, 1).cpu().numpy() * 255) \
+            .round().astype(np.uint8)
+        Image.fromarray(arr).save(path)
+
     os.makedirs(args.outdir, exist_ok=True)
+    sqdir = os.path.join(args.outdir, "square")
+    os.makedirs(sqdir, exist_ok=True)
+    save_square(x0, f"{sqdir}/baseline_eps0.png")
     dense0, V0 = feats(x0)
     dense0, V0 = dense0.detach(), V0.detach()
     pp0, pl0 = readout(dense0)
@@ -171,7 +181,9 @@ def main():
             cbg = ((V_a[obj_t] * V_bg[obj_t]).sum(-1).mean().item() if "V" in name
                    else (dense_a[obj_t] * dense_bg[obj_t]).sum(-1).mean().item())
             res[name]["pp"].append(pp[0]); res[name]["pl"].append(pl[0]); res[name]["cos_bg"].append(cbg)
-            save_full(x_adv, f"{args.outdir}/{name.replace('+', '_').replace('-', '_')}_eps{int(b)}.png")
+            slug = name.replace('+', '_').replace('-', '_')
+            save_full(x_adv, f"{args.outdir}/{slug}_eps{int(b)}.png")
+            save_square(x_adv, f"{sqdir}/{slug}_eps{int(b)}.png")
             if b == budgets[-1]:
                 dist_at_max[name] = pl
             line = (f"{name:<18} eps={b:>4.0f}/255  pooled P({obj_name})={pl[0]:.3f} "

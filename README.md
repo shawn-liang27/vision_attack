@@ -84,6 +84,15 @@ uv run python pgd_bg_anchor.py --budgets 4,8,16 --iters 300
 #     three objectives compared on the same verification (V should drop P(dog)
 #     where X did not; +suppress should collapse it)
 uv run python pgd_v_attack.py --budgets 4,8,16 --iters 300 --beta 1.0
+
+# 13. SAME-ENCODER VLM test (does CLIP-space concealment change the caption?):
+#     regenerate V-attack on LLaVA-1.5's OWN encoder (clip-vit-large-patch14-336,
+#     simple 336 resize, no AnyRes), then caption the EXACT 336 squares so the
+#     VLM's resize doesn't resample the perturbation away.
+uv run python pgd_v_attack.py --model openai/clip-vit-large-patch14-336 --res 336 \
+    --budgets 4,8,16 --iters 300 --beta 1.0 --outdir results/v_attack_llava
+uv run python vlm_eval.py --images-dir results/v_attack_llava/square \
+    --models llava-hf/llava-1.5-7b-hf
 ```
 
 Outputs land in `results/`: `stats_<tag>.txt` and `patch_analysis_<tag>.png`.
