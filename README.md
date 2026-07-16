@@ -93,6 +93,14 @@ uv run python pgd_v_attack.py --model openai/clip-vit-large-patch14-336 --res 33
     --budgets 4,8,16 --iters 300 --beta 1.0 --outdir results/v_attack_llava
 uv run python vlm_eval.py --images-dir results/v_attack_llava/square \
     --models llava-hf/llava-1.5-7b-hf
+
+# 14. representation-target fix: stage 13 showed CLIP-space concealment succeeds
+#     on LLaVA's own encoder yet the caption still says dog -- because the
+#     projector reads the RAW penultimate patch tokens, not CLIP's zero-shot
+#     head. Steer THAT representation instead.
+uv run python pgd_projector_target.py --budgets 8,16,32 --iters 300
+uv run python vlm_eval.py --images-dir results/projector_target/square \
+    --models llava-hf/llava-1.5-7b-hf
 ```
 
 Outputs land in `results/`: `stats_<tag>.txt` and `patch_analysis_<tag>.png`.
