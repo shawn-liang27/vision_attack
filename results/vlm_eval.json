@@ -1,63 +1,39 @@
 {
   "llava-hf/llava-1.5-7b-hf": {
-    "V_match_eps16.png": {
-      "binary": "Yes",
-      "describe": "A dog is sitting on a couch with its mouth open.",
-      "animals": "There is a dog in this image.",
-      "detected": true
-    },
-    "V_match_eps4.png": {
-      "binary": "Yes",
-      "describe": "A dog is sitting on a couch with a smile on its face.",
-      "animals": "There is a dog in this image.",
-      "detected": true
-    },
-    "V_match_eps8.png": {
-      "binary": "Yes",
-      "describe": "A dog is sitting on a couch with its mouth open.",
-      "animals": "There is a dog in this image.",
-      "detected": true
-    },
-    "V_match_suppress_eps16.png": {
-      "binary": "Yes",
-      "describe": "A dog is sitting on a couch with its mouth open.",
-      "animals": "There is a dog in the image.",
-      "detected": true
-    },
-    "V_match_suppress_eps4.png": {
-      "binary": "Yes",
-      "describe": "A dog is sitting on a couch with a smile on its face.",
-      "animals": "There is a dog in this image.",
-      "detected": true
-    },
-    "V_match_suppress_eps8.png": {
-      "binary": "Yes",
-      "describe": "A dog is sitting on a couch with a smile on its face.",
-      "animals": "There is a dog in this image.",
-      "detected": true
-    },
-    "X_match_eps16.png": {
-      "binary": "Yes",
-      "describe": "A dog is sitting on a couch with a white collar.",
-      "animals": "There is a dog in this image.",
-      "detected": true
-    },
-    "X_match_eps4.png": {
-      "binary": "Yes",
-      "describe": "A brown and white dog is sitting on a couch.",
-      "animals": "There is a dog in this image.",
-      "detected": true
-    },
-    "X_match_eps8.png": {
-      "binary": "Yes",
-      "describe": "A brown and white dog is sitting on a couch.",
-      "animals": "There is a dog in this image.",
-      "detected": true
-    },
     "baseline_eps0.png": {
-      "binary": "Yes",
+      "binary": "No",
       "describe": "A brown and white dog is sitting on a couch.",
       "animals": "There is a dog in this image.",
+      "detected": false
+    },
+    "dog2cat_eps128.png": {
+      "binary": "Yes",
+      "describe": "A cat is sitting on a couch with a picture of a cat on it.",
+      "animals": "There is a cat in this image.",
+      "detected": true
+    },
+    "dog2cat_eps16.png": {
+      "binary": "Yes",
+      "describe": "A black and white cat is sitting on a couch.",
+      "animals": "There is a cat in this image.",
+      "detected": true
+    },
+    "dog2cat_eps32.png": {
+      "binary": "Yes",
+      "describe": "A cat is sitting on a couch with its mouth open.",
+      "animals": "There is a cat in this image.",
+      "detected": true
+    },
+    "dog2cat_eps64.png": {
+      "binary": "Yes",
+      "describe": "A cat is sitting on a couch and looking at the camera.",
+      "animals": "There is a cat in this image.",
+      "detected": true
+    },
+    "dog2cat_eps8.png": {
+      "binary": "Yes",
+      "describe": "A cat is sitting on a couch and yawning.",
+      "animals": "There is a cat in this image.",
       "detected": true
     }
   }

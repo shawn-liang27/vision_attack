@@ -1,0 +1,7 @@
+H1 global-loss/ROI-update  original.png->removed.png eps=8.0/255 steps=300
+baseline cos(orig,target)=0.7728 global P(dog)=0.7289
+pad=0     region=22.2%  cos(adv,target)=0.859  global P(dog)=0.154 P(couch)=0.746  argmax=couch
+pad=0.05  region=33.1%  cos(adv,target)=0.850  global P(dog)=0.166 P(couch)=0.767  argmax=couch
+pad=0.15  region=58.9%  cos(adv,target)=0.869  global P(dog)=0.085 P(couch)=0.793  argmax=couch
+pad=0.35  region=98.5%  cos(adv,target)=0.860  global P(dog)=0.045 P(couch)=0.831  argmax=couch
+pad=1     region=100.0%  cos(adv,target)=0.873  global P(dog)=0.055 P(couch)=0.854  argmax=couch

@@ -1,0 +1,160 @@
+{
+  "llava-hf/llava-1.5-7b-hf": {
+    "baseline.png": {
+      "binary": "Yes",
+      "describe": "A brown and white dog is sitting on a couch.",
+      "animals": "There is a dog in this image.",
+      "detected": true
+    },
+    "pad0.05_seed0.png": {
+      "binary": "Yes",
+      "describe": "A dog is sitting on a couch and smiling.",
+      "animals": "There is a dog in this image.",
+      "detected": true
+    },
+    "pad0.05_seed1.png": {
+      "binary": "Yes",
+      "describe": "A dog is sitting on a couch with a collar on.",
+      "animals": "There is a dog in this image.",
+      "detected": true
+    },
+    "pad0.05_seed2.png": {
+      "binary": "Yes",
+      "describe": "A corgi dog is sitting on a couch and smiling.",
+      "animals": "There is a dog in this image.",
+      "detected": true
+    },
+    "pad0.05_seed3.png": {
+      "binary": "Yes",
+      "describe": "A dog is sitting on a couch with a collar on.",
+      "animals": "There is a dog in this image.",
+      "detected": true
+    },
+    "pad0.05_seed4.png": {
+      "binary": "Yes",
+      "describe": "A brown and white dog is sitting on a couch.",
+      "animals": "There is a dog in this image.",
+      "detected": true
+    },
+    "pad0.15_seed0.png": {
+      "binary": "Yes",
+      "describe": "A stuffed dog is sitting on a couch.",
+      "animals": "There is a dog in this image.",
+      "detected": true
+    },
+    "pad0.15_seed1.png": {
+      "binary": "Yes",
+      "describe": "A stuffed dog is sitting on a couch.",
+      "animals": "There is a stuffed dog in the image.",
+      "detected": true
+    },
+    "pad0.15_seed2.png": {
+      "binary": "Yes",
+      "describe": "A stuffed dog is sitting on a couch.",
+      "animals": "There is a dog in this image.",
+      "detected": true
+    },
+    "pad0.15_seed3.png": {
+      "binary": "Yes",
+      "describe": "A dog statue is sitting on a couch.",
+      "animals": "There is a dog in this image.",
+      "detected": true
+    },
+    "pad0.15_seed4.png": {
+      "binary": "Yes",
+      "describe": "A stuffed dog is sitting on a couch.",
+      "animals": "There is a dog in this image.",
+      "detected": true
+    },
+    "pad0.35_seed0.png": {
+      "binary": "Yes",
+      "describe": "A couch with a dog statue on it.",
+      "animals": "There is a dog in the image, sitting on a couch.",
+      "detected": true
+    },
+    "pad0.35_seed1.png": {
+      "binary": "No",
+      "describe": "A couch with a white throw pillow on it.",
+      "animals": "There are no animals in this image. The image features a couch with pillows and a chair with a stuffed animal on it.",
+      "detected": false
+    },
+    "pad0.35_seed2.png": {
+      "binary": "No",
+      "describe": "A green couch with a pillow on it.",
+      "animals": "There are no animals in this image. The image features a couch with pillows and a clock on the wall.",
+      "detected": false
+    },
+    "pad0.35_seed3.png": {
+      "binary": "No",
+      "describe": "A couch with a clock on it and a vase in front of it.",
+      "animals": "There are no animals in this image. The image features a couch with pillows and a clock on the wall.",
+      "detected": false
+    },
+    "pad0.35_seed4.png": {
+      "binary": "No",
+      "describe": "A couch with a blanket on it and a clock on the wall.",
+      "animals": "There are no animals in this image. The image features a couch with pillows and a clock on the wall.",
+      "detected": false
+    },
+    "pad0_seed0.png": {
+      "binary": "Yes",
+      "describe": "A brown and white dog is sitting on a couch.",
+      "animals": "There is a dog in this image.",
+      "detected": true
+    },
+    "pad0_seed1.png": {
+      "binary": "Yes",
+      "describe": "A dog is sitting on a couch with a smile on its face.",
+      "animals": "There is a dog in this image.",
+      "detected": true
+    },
+    "pad0_seed2.png": {
+      "binary": "Yes",
+      "describe": "A dog is sitting on a couch with a smile on its face.",
+      "animals": "There is a dog in this image.",
+      "detected": true
+    },
+    "pad0_seed3.png": {
+      "binary": "Yes",
+      "describe": "A dog is sitting on a couch with a smile on its face.",
+      "animals": "There is a dog in this image.",
+      "detected": true
+    },
+    "pad0_seed4.png": {
+      "binary": "Yes",
+      "describe": "A dog is sitting on a couch and smiling.",
+      "animals": "There is a dog in this image.",
+      "detected": true
+    },
+    "pad1_seed0.png": {
+      "binary": "No",
+      "describe": "A couch with a blanket on it and a clock on the wall.",
+      "animals": "There are no animals in this image. The image features a couch with pillows and a clock on a table.",
+      "detected": false
+    },
+    "pad1_seed1.png": {
+      "binary": "No",
+      "describe": "A stuffed animal is sitting on a couch next to a bookshelf.",
+      "animals": "There are no animals in this image. The image features a couch with a stuffed animal on it, a mirror, and a bookshelf.",
+      "detected": false
+    },
+    "pad1_seed2.png": {
+      "binary": "Yes",
+      "describe": "A dog statue is placed on a couch, with a bookshelf in the background.",
+      "animals": "There is a dog in the image, sitting on a couch.",
+      "detected": true
+    },
+    "pad1_seed3.png": {
+      "binary": "No",
+      "describe": "A couch with a white vase on a table in front of it.",
+      "animals": "There are no animals in this image. The image features a couch with a mirror on a table in front of it.",
+      "detected": false
+    },
+    "pad1_seed4.png": {
+      "binary": "Yes",
+      "describe": "A couch with a white blanket on it and a lamp next to it.",
+      "animals": "There are no animals in this image. The image features a couch with a blanket on it, a lamp, and a teddy bear.",
+      "detected": true
+    }
+  }
+}

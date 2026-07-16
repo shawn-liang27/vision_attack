@@ -1,0 +1,7 @@
+labels=['dog', 'cat', 'couch', 'cushion', 'wall', 'window']
+baseline pooled P(dog)=0.9978 P(cat)=0.0021
+eps=   8/255  pooled P(dog)=0.000 P(cat)=1.000 argmax=cat  (perpatch P(cat)=0.904)
+eps=  16/255  pooled P(dog)=0.000 P(cat)=1.000 argmax=cat  (perpatch P(cat)=0.935)
+eps=  32/255  pooled P(dog)=0.000 P(cat)=1.000 argmax=cat  (perpatch P(cat)=0.951)
+eps=  64/255  pooled P(dog)=0.000 P(cat)=1.000 argmax=cat  (perpatch P(cat)=0.975)
+eps= 128/255  pooled P(dog)=0.000 P(cat)=1.000 argmax=cat  (perpatch P(cat)=0.992)
