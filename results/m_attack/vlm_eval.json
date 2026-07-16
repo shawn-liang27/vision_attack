@@ -1,0 +1,22 @@
+{
+  "llava-hf/llava-1.5-7b-hf": {
+    "baseline.png": {
+      "binary": "Yes",
+      "describe": "A brown and white dog is sitting on a couch.",
+      "animals": "There is a dog in this image.",
+      "detected": true
+    },
+    "m_attack.png": {
+      "binary": "Yes",
+      "describe": "A graph shows the difference between a dog and a couch.",
+      "animals": "There are no animals in this image. The image is focused on a graph or chart with a red line and a blue line, which are likely representing different data points or trends.",
+      "detected": true
+    },
+    "m_attack_eps16.png": {
+      "binary": "No",
+      "describe": "A green couch with a clock on top of it.",
+      "animals": "There are no animals in this image. The image features a couch with pillows and a clock on a table.",
+      "detected": false
+    }
+  }
+}

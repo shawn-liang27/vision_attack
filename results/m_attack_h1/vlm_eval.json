@@ -1,0 +1,46 @@
+{
+  "llava-hf/llava-1.5-7b-hf": {
+    "baseline.png": {
+      "binary": "Yes",
+      "describe": "A brown and white dog is sitting on a couch.",
+      "animals": "There is a dog in this image.",
+      "detected": true
+    },
+    "h1_dose_response.png": {
+      "binary": "Yes",
+      "describe": "A graph shows the percentage of image-based attacks and the percentage of attacks that use a masked update.",
+      "animals": "There are no animals in this image. The image is focused on a graph showing the percentage of attacks and the percentage of successful attacks.",
+      "detected": true
+    },
+    "pad0.05.png": {
+      "binary": "Yes",
+      "describe": "A brown and white dog is sitting on a couch.",
+      "animals": "There is a dog in this image.",
+      "detected": true
+    },
+    "pad0.15.png": {
+      "binary": "Yes",
+      "describe": "A dog is sitting on a couch with a striped blanket.",
+      "animals": "There is a dog in this image.",
+      "detected": true
+    },
+    "pad0.35.png": {
+      "binary": "Yes",
+      "describe": "A dog is sitting on a couch with a book in front of it.",
+      "animals": "There is a dog in this image.",
+      "detected": true
+    },
+    "pad0.png": {
+      "binary": "Yes",
+      "describe": "A dog is sitting on a couch with a smile on its face.",
+      "animals": "There is a dog in this image.",
+      "detected": true
+    },
+    "pad1.png": {
+      "binary": "Yes",
+      "describe": "A dog is sitting on a couch in front of a window.",
+      "animals": "There is a dog in this image.",
+      "detected": true
+    }
+  }
+}

@@ -1,0 +1,7 @@
+original.png->removed.png eps=16.0/255 steps=300
+baseline global P(dog)=0.7289
+pad=0     region=22.2%  cos(region,target)=0.802  global P(dog)=0.696 P(couch)=0.276  argmax=dog
+pad=0.05  region=33.1%  cos(region,target)=0.815  global P(dog)=0.699 P(couch)=0.262  argmax=dog
+pad=0.15  region=58.9%  cos(region,target)=0.812  global P(dog)=0.653 P(couch)=0.313  argmax=dog
+pad=0.35  region=98.5%  cos(region,target)=0.945  global P(dog)=0.033 P(couch)=0.892  argmax=couch
+pad=1     region=100.0%  cos(region,target)=0.938  global P(dog)=0.002 P(couch)=0.881  argmax=couch

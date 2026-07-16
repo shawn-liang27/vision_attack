@@ -49,6 +49,7 @@ def main():
     ap.add_argument("--models", default=",".join(DEFAULT_MODELS))
     ap.add_argument("--object", default="dog")
     ap.add_argument("--max-new-tokens", type=int, default=64)
+    ap.add_argument("--outdir", default="results")
     args = ap.parse_args()
     obj = args.object
 
@@ -89,12 +90,12 @@ def main():
         if DEVICE == "cuda":
             torch.cuda.empty_cache()
 
-    os.makedirs("results", exist_ok=True)
-    with open("results/vlm_eval.json", "w") as f:
+    os.makedirs(args.outdir, exist_ok=True)
+    with open(f"{args.outdir}/vlm_eval.json", "w") as f:
         json.dump(results, f, indent=2)
 
     # markdown: rows = images, columns = per-model detected flag; then details
-    with open("results/vlm_eval.md", "w") as f:
+    with open(f"{args.outdir}/vlm_eval.md", "w") as f:
         f.write(f"# VLM transfer test: does the VLM still see the {obj}?\n\n")
         models = list(results.keys())
         f.write("| image | " + " | ".join(m.split("/")[-1] for m in models) + " |\n")

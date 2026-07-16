@@ -1,0 +1,7 @@
+labels=['dog', 'couch', 'cushion', 'wall', 'window', 'houseplant']
+baseline penult cos(orig ROI,bg)=0.1464 pooled P(dog)=0.9534
+eps=   8/255  GATE penult cos->bg 0.146->0.494 (->orig 0.474) | CLIP zero-shot P(dog) 0.953->0.412 argmax=dog
+eps=  16/255  GATE penult cos->bg 0.146->0.552 (->orig 0.375) | CLIP zero-shot P(dog) 0.953->0.156 argmax=cushion
+eps=  32/255  GATE penult cos->bg 0.146->0.594 (->orig 0.329) | CLIP zero-shot P(dog) 0.953->0.079 argmax=cushion
+eps=  64/255  GATE penult cos->bg 0.146->0.626 (->orig 0.292) | CLIP zero-shot P(dog) 0.953->0.035 argmax=couch
+eps= 128/255  GATE penult cos->bg 0.146->0.670 (->orig 0.258) | CLIP zero-shot P(dog) 0.953->0.014 argmax=cushion

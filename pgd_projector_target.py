@@ -43,7 +43,7 @@ def main():
     ap.add_argument("--model", default="openai/clip-vit-large-patch14-336",
                     help="the VLM's vision tower (LLaVA-1.5)")
     ap.add_argument("--original", default="original.png")
-    ap.add_argument("--background", default="removed_aligned.png")
+    ap.add_argument("--background", default="removed.png")
     ap.add_argument("--mask", default="masks/dog_mask.png")
     ap.add_argument("--object", default="dog")
     ap.add_argument("--res", type=int, default=336)

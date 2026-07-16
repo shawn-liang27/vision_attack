@@ -1,0 +1,4 @@
+single surrogate=openai/clip-vit-large-patch14-336  original.png->removed.png  eps=16.0/255 steps=300 attack=mifgsm
+cos(adv, target): 0.7728 -> 0.9455   (1.0 = identical embedding)
+global zero-shot P(dog): 0.7289 -> 0.0003   argmax dog -> couch
+global zero-shot P(couch): 0.2290 -> 0.7631
