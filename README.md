@@ -79,6 +79,11 @@ uv run python vlm_eval.py --images-dir results/adv_images_vlm \
 #     correct CLIP-space verification (loss-climb gate -> per-patch gate ->
 #     zero-shot ROI object->background flip, per-patch AND pooled)
 uv run python pgd_bg_anchor.py --budgets 4,8,16 --iters 300
+
+# 12. V-Attack: steer VALUE features V (not output feats X) + dog-suppression,
+#     three objectives compared on the same verification (V should drop P(dog)
+#     where X did not; +suppress should collapse it)
+uv run python pgd_v_attack.py --budgets 4,8,16 --iters 300 --beta 1.0
 ```
 
 Outputs land in `results/`: `stats_<tag>.txt` and `patch_analysis_<tag>.png`.
