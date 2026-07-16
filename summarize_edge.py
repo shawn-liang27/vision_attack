@@ -1,10 +1,9 @@
-"""Merge m_attack_edge metrics.csv with vlm_eval.json -> per-arm success rate.
+"""Generalization summary: per-object AND aggregate arm success rates.
 
-Hypothesis confirmed if edge_v1's concealment success climbs from pad0's rate
-toward pad0.15's. For edge_v2 also reports mean grad_align (>0 cooperate, <0 the
-added boundary term fights M-Attack).
+Merges m_attack_edge metrics.csv with vlm_eval.json. The headline test:
+does edge_v1 recover pad0.15 (>> pad0) ACROSS objects, not just the dog?
 
-    uv run python summarize_edge.py --dir results/edge
+    uv run python summarize_edge.py --dir results/edge_gen
 """
 
 import argparse
@@ -15,11 +14,12 @@ from collections import defaultdict
 
 import numpy as np
 
+ARM_ORDER = ["pad0", "pad0.15", "edge_v1", "edge_v2"]
+
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--dir", required=True)
-    ap.add_argument("--object", default="dog")
     args = ap.parse_args()
 
     with open(os.path.join(args.dir, "metrics.csv")) as f:
@@ -27,33 +27,54 @@ def main():
     with open(os.path.join(args.dir, "vlm_eval.json")) as f:
         vj = json.load(f)
     model_key = next(iter(vj))
-    detected = {n: v.get("detected") for n, v in vj[model_key].items()}
+    det = {n: v.get("detected") for n, v in vj[model_key].items()}
+    has_id = "id" in met[0]
 
-    by_arm = defaultdict(list)
-    for r in met:
-        by_arm[r["arm"]].append(r)
+    def conceal(rows):
+        d = [det.get(r["filename"]) for r in rows]
+        d = [x for x in d if x is not None]
+        return (100 * (1 - np.mean(d)) if d else float("nan")), len(d)
 
-    order = ["pad0", "pad0.15", "edge_v1", "edge_v2"]
-    arms = [a for a in order if a in by_arm] + [a for a in by_arm if a not in order]
-    print(f"model={model_key}  object={args.object}\n")
-    hdr = f"{'arm':<10}{'n':>3}{'conceal%':>10}{'cos->tgt':>11}{'gP(dog)':>10}{'roiP(dog)':>11}{'grad_align':>12}"
-    print(hdr); print("-" * len(hdr))
-    for arm in arms:
-        rs = by_arm[arm]
-        det = [detected.get(r["filename"]) for r in rs]
-        det = [d for d in det if d is not None]
-        conceal = 100 * (1 - np.mean(det)) if det else float("nan")
-        cos_t = np.array([float(r["cos_to_target"]) for r in rs])
-        gpd = np.array([float(r["global_p_dog"]) for r in rs])
-        rpd = np.array([float(r["roi_p_dog"]) for r in rs])
-        ga = np.array([float(r["grad_align"]) for r in rs])
-        ga = ga[~np.isnan(ga)]
-        ga_s = f"{ga.mean():>11.3f}" if len(ga) else f"{'—':>12}"
-        print(f"{arm:<10}{len(rs):>3}{conceal:>9.0f}%{cos_t.mean():>8.3f}±{cos_t.std():.2f}"
-              f"{gpd.mean():>7.3f}±{gpd.std():.2f}{rpd.mean():>8.3f}±{rpd.std():.2f}{ga_s}")
+    def roi(rows):
+        return np.mean([float(r.get("roi_p_obj", r.get("roi_p_dog", "nan"))) for r in rows])
 
-    print("\nreading: hypothesis CONFIRMED if edge_v1 conceal% >> pad0 and ~ pad0.15.")
-    print("if edge_v2 grad_align < 0, the added boundary term is fighting M-Attack (as suppression did).")
+    arms = [a for a in ARM_ORDER if any(r["arm"] == a for r in met)]
+
+    if has_id:
+        print(f"model={model_key}\n=== per-object concealment success rate (%) ===\n")
+        objs = sorted({(r["id"], r.get("object", "")) for r in met})
+        hdr = f"{'object':<22}" + "".join(f"{a:>10}" for a in arms)
+        print(hdr); print("-" * len(hdr))
+        for sid, obj in objs:
+            cells = ""
+            for a in arms:
+                rs = [r for r in met if r["id"] == sid and r["arm"] == a]
+                c, _ = conceal(rs)
+                cells += f"{c:>9.0f}%" if not np.isnan(c) else f"{'n/a':>10}"
+            print(f"{(obj or sid)[:21]:<22}{cells}")
+
+        print("\n=== AGGREGATE across objects (the generalization headline) ===\n")
+        hdr = f"{'arm':<10}{'conceal% (mean over objs)':>28}{'roiP(obj)':>12}"
+        print(hdr); print("-" * len(hdr))
+        for a in arms:
+            per_obj = []
+            for sid, _ in objs:
+                rs = [r for r in met if r["id"] == sid and r["arm"] == a]
+                c, _ = conceal(rs)
+                if not np.isnan(c):
+                    per_obj.append(c)
+            m = np.mean(per_obj) if per_obj else float("nan")
+            s = np.std(per_obj) if per_obj else float("nan")
+            rp = roi([r for r in met if r["arm"] == a])
+            print(f"{a:<10}{m:>18.0f}% ± {s:<4.0f}{rp:>12.3f}")
+        print("\nGENERALIZES if edge_v1 aggregate >> pad0 and ~ pad0.15 across objects.")
+    else:
+        # single-sample fallback
+        print(f"model={model_key}\n{'arm':<10}{'conceal%':>10}{'roiP':>10}")
+        for a in arms:
+            rs = [r for r in met if r["arm"] == a]
+            c, n = conceal(rs)
+            print(f"{a:<10}{c:>9.0f}%{roi(rs):>10.3f}  (n={n})")
 
 
 if __name__ == "__main__":
