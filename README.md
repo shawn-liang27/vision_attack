@@ -122,6 +122,13 @@ uv run python vlm_eval.py --images-dir results/m_attack \
 uv run python m_attack_roi.py --pads 0,0.05,0.15,0.35,1.0 --steps 300 --eps 16
 uv run python vlm_eval.py --images-dir results/m_attack_roi \
     --object dog --models llava-hf/llava-1.5-7b-hf
+
+# 18. H1 test: whole-image crop-matching LOSS (global signal, matches what LLaVA
+#     reads) but ROI-masked UPDATE (perturbation only in ROI). "Mask the update,
+#     not the loss." Padding sweep; compare to #17 (local signal) at same pads.
+uv run python m_attack_h1.py --pads 0,0.05,0.15,0.35,1.0 --steps 300 --eps 16
+uv run python vlm_eval.py --images-dir results/m_attack_h1 \
+    --object dog --models llava-hf/llava-1.5-7b-hf
 ```
 
 Outputs land in `results/`: `stats_<tag>.txt` and `patch_analysis_<tag>.png`.
