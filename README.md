@@ -101,6 +101,13 @@ uv run python vlm_eval.py --images-dir results/v_attack_llava/square \
 uv run python pgd_projector_target.py --budgets 8,16,32 --iters 300
 uv run python vlm_eval.py --images-dir results/projector_target/square \
     --models llava-hf/llava-1.5-7b-hf
+
+# 15. capability probe: V-Attack mechanism (value features, PGD/L_inf, single
+#     model, NO surrogates) with a TEXT target "cat" instead of background.
+#     dog->cat is far easier than dog->absent; does ANY feature attack move LLaVA?
+uv run python v_attack_cat.py --budgets 8,16,32,64,128 --iters 300
+uv run python vlm_eval.py --images-dir results/v_attack_cat/square \
+    --object cat --models llava-hf/llava-1.5-7b-hf
 ```
 
 Outputs land in `results/`: `stats_<tag>.txt` and `patch_analysis_<tag>.png`.
