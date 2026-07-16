@@ -108,6 +108,13 @@ uv run python vlm_eval.py --images-dir results/projector_target/square \
 uv run python v_attack_cat.py --budgets 8,16,32,64,128 --iters 300
 uv run python vlm_eval.py --images-dir results/v_attack_cat/square \
     --object cat --models llava-hf/llava-1.5-7b-hf
+
+# 16. M-Attack (V1) verification: whole-image, crop-matched embedding steering
+#     original -> removed.png, single surrogate = LLaVA-1.5's own encoder.
+#     Does whole-image crop-matching (more powerful than masked nudges) flip LLaVA?
+uv run python m_attack.py --steps 300 --eps 16 --alpha 1 --attack mifgsm
+uv run python vlm_eval.py --images-dir results/m_attack \
+    --object dog --models llava-hf/llava-1.5-7b-hf
 ```
 
 Outputs land in `results/`: `stats_<tag>.txt` and `patch_analysis_<tag>.png`.
