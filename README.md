@@ -74,6 +74,11 @@ uv run python verify_attack.py
 uv run python pgd_vlm_encoder.py --budgets 8,16 --iters 250 --eot 8
 uv run python vlm_eval.py --images-dir results/adv_images_vlm \
     --models llava-hf/llava-v1.6-mistral-7b-hf
+
+# 11. focused: generated-background image as the ONLY PGD anchor, with the
+#     correct CLIP-space verification (loss-climb gate -> per-patch gate ->
+#     zero-shot ROI object->background flip, per-patch AND pooled)
+uv run python pgd_bg_anchor.py --budgets 4,8,16 --iters 300
 ```
 
 Outputs land in `results/`: `stats_<tag>.txt` and `patch_analysis_<tag>.png`.
