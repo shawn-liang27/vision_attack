@@ -129,6 +129,18 @@ uv run python vlm_eval.py --images-dir results/m_attack_roi \
 uv run python m_attack_h1.py --pads 0,0.05,0.15,0.35,1.0 --steps 300 --eps 16
 uv run python vlm_eval.py --images-dir results/m_attack_h1 \
     --object dog --models llava-hf/llava-1.5-7b-hf
+
+# 19. SEEDED sweep (rigor): N seeds/padding -> success RATE, continuous signals
+#     (ROI P(dog), cos-to-target), and per-pixel perturbation density. Run both
+#     modes (h1 global-signal, local local-signal) for the seed-matched compare.
+uv run python m_attack_sweep.py --mode h1    --seeds 5 --steps 300 --eps 16
+uv run python m_attack_sweep.py --mode local --seeds 5 --steps 300 --eps 16
+uv run python vlm_eval.py --images-dir results/sweep_h1 --object dog \
+    --models llava-hf/llava-1.5-7b-hf
+uv run python vlm_eval.py --images-dir results/sweep_local --object dog \
+    --models llava-hf/llava-1.5-7b-hf
+uv run python summarize_sweep.py --dir results/sweep_h1
+uv run python summarize_sweep.py --dir results/sweep_local
 ```
 
 Outputs land in `results/`: `stats_<tag>.txt` and `patch_analysis_<tag>.png`.
