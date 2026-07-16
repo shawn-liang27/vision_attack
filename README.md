@@ -149,6 +149,16 @@ uv run python summarize_sweep.py --dir results/sweep_local
 uv run python m_attack_combined.py --lam-steer 1 --lam-supp 1 --steps 300 --eps 16
 uv run python vlm_eval.py --images-dir results/m_attack_combined \
     --object dog --models llava-hf/llava-1.5-7b-hf
+
+# 21. edge-emphasis test: does concentrating perturbation on the object contour
+#     let a tight ROI (pad0) recover what the pad0.15 margin bought? Arms:
+#     pad0 (fail baseline), pad0.15 (work baseline), edge_v1 (gradient
+#     reweighting -- no new term), edge_v2 (added boundary term, grad-cooperation
+#     logged). 5 seeds -> success rate.
+uv run python m_attack_edge.py --seeds 5 --steps 300 --eps 16
+uv run python vlm_eval.py --images-dir results/edge --outdir results/edge \
+    --object dog --models llava-hf/llava-1.5-7b-hf
+uv run python summarize_edge.py --dir results/edge
 ```
 
 Outputs land in `results/`: `stats_<tag>.txt` and `patch_analysis_<tag>.png`.
