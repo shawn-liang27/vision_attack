@@ -141,6 +141,13 @@ uv run python vlm_eval.py --images-dir results/sweep_local --object dog \
     --models llava-hf/llava-1.5-7b-hf
 uv run python summarize_sweep.py --dir results/sweep_h1
 uv run python summarize_sweep.py --dir results/sweep_local
+
+# 20. unified single loss (Option 2): M-Attack crop-steering + per-crop ROI
+#     suppression on the SAME crop forward pass; logs whether the two terms
+#     cooperate or fight (cosine of their gradients on delta).
+uv run python m_attack_combined.py --lam-steer 1 --lam-supp 1 --steps 300 --eps 16
+uv run python vlm_eval.py --images-dir results/m_attack_combined \
+    --object dog --models llava-hf/llava-1.5-7b-hf
 ```
 
 Outputs land in `results/`: `stats_<tag>.txt` and `patch_analysis_<tag>.png`.
