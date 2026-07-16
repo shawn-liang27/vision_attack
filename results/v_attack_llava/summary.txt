@@ -1,0 +1,11 @@
+labels=['dog', 'couch', 'cushion', 'wall', 'window', 'houseplant']
+baseline pooled P(dog)=0.9534 perpatch=0.7173
+X-match            eps=   4/255  pooled P(dog)=0.513 perpatch=0.436  argmax=dog  cos->bg=0.611
+X-match            eps=   8/255  pooled P(dog)=0.405 perpatch=0.384  argmax=dog  cos->bg=0.655
+X-match            eps=  16/255  pooled P(dog)=0.312 perpatch=0.340  argmax=dog  cos->bg=0.695
+V-match            eps=   4/255  pooled P(dog)=0.867 perpatch=0.548  argmax=dog  cos->bg=0.273
+V-match            eps=   8/255  pooled P(dog)=0.604 perpatch=0.404  argmax=dog  cos->bg=0.382
+V-match            eps=  16/255  pooled P(dog)=0.283 perpatch=0.308  argmax=couch  cos->bg=0.456
+V-match+suppress   eps=   4/255  pooled P(dog)=0.557 perpatch=0.393  argmax=dog  cos->bg=0.253
+V-match+suppress   eps=   8/255  pooled P(dog)=0.199 perpatch=0.260  argmax=cushion  cos->bg=0.363
+V-match+suppress   eps=  16/255  pooled P(dog)=0.087 perpatch=0.201  argmax=cushion  cos->bg=0.440

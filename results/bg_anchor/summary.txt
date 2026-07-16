@@ -1,0 +1,5 @@
+labels=['dog', 'couch', 'cushion', 'wall', 'window', 'houseplant']
+baseline pooled P(dog)=0.9832 perpatch=0.8312 argmax=dog
+eps=   4/255 | GATE1 cos->bg 0.507->0.674 cos->orig 1.000->0.810 | GATE2 ROI->bg 0.674 ROI->orig 0.810 | VERIFY pooled P(dog) 0.983->0.903 argmax=dog
+eps=   8/255 | GATE1 cos->bg 0.510->0.709 cos->orig 0.999->0.768 | GATE2 ROI->bg 0.709 ROI->orig 0.768 | VERIFY pooled P(dog) 0.983->0.758 argmax=dog
+eps=  16/255 | GATE1 cos->bg 0.516->0.733 cos->orig 0.998->0.739 | GATE2 ROI->bg 0.733 ROI->orig 0.739 | VERIFY pooled P(dog) 0.983->0.738 argmax=dog

@@ -1,0 +1,14 @@
+image,p_dog_448,p_dog_336,p_dog_224,max_448
+baseline.png,0.7919,0.8058,0.8515,0.9969
+img_target_CLS_eps16.png,0.5974,0.6830,0.7982,0.9973
+img_target_CLS_eps2.png,0.7785,0.8207,0.8713,0.9967
+img_target_CLS_eps4.png,0.6876,0.8051,0.8571,0.9975
+img_target_CLS_eps8.png,0.6752,0.7553,0.8479,0.9999
+img_target_local_eps16.png,0.5533,0.7588,0.8634,0.9502
+img_target_local_eps2.png,0.8285,0.8432,0.8853,0.9841
+img_target_local_eps4.png,0.7342,0.8247,0.8806,0.9724
+img_target_local_eps8.png,0.5944,0.7834,0.8748,0.9650
+text_local_eps16.png,0.0122,0.3056,0.7588,0.7555
+text_local_eps2.png,0.2818,0.5448,0.7932,0.9705
+text_local_eps4.png,0.0962,0.4121,0.7870,0.9016
+text_local_eps8.png,0.0245,0.3379,0.7751,0.8174
