@@ -1,0 +1,5 @@
+lam_steer=1.0 lam_supp=1.0 lam_tv=0.0 eps=16.0/255
+cos(adv,target): 0.7728 -> 0.8666
+global P(dog):   0.7289 -> 0.0525
+ROI   P(dog):    0.6185 -> 0.4000
+mean grad_align(steer,supp) = -0.1365   (FIGHT)

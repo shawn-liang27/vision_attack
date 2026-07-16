@@ -1,0 +1,22 @@
+{
+  "llava-hf/llava-1.5-7b-hf": {
+    "baseline.png": {
+      "binary": "Yes",
+      "describe": "A brown and white dog is sitting on a couch.",
+      "animals": "There is a dog in this image.",
+      "detected": true
+    },
+    "combined_eps16.png": {
+      "binary": "Yes",
+      "describe": "A dog is sitting on a couch with a book in front of it.",
+      "animals": "There is a dog in this image.",
+      "detected": true
+    },
+    "cooperation.png": {
+      "binary": "Yes",
+      "describe": "A graph shows the effectiveness of a dog's stealthy approach to a target.",
+      "animals": "There are no animals in this image. The image focuses on a graph and a chart, which are related to the study of animal behavior.",
+      "detected": true
+    }
+  }
+}
