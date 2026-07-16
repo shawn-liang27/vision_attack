@@ -143,7 +143,7 @@ def main():
         region = torch.zeros((1, 1, RES, RES), device=DEVICE)
         region[:, :, T_:B_, L_:R_] = 1.0
         coverage = region.mean().item()
-        rmask = region > 0
+        rmask = (region > 0).expand(-1, 3, -1, -1)  # match delta's 3 channels
 
         for seed in range(args.seeds):
             seed_everything(1000 + seed)
