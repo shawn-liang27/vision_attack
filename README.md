@@ -115,6 +115,13 @@ uv run python vlm_eval.py --images-dir results/v_attack_cat/square \
 uv run python m_attack.py --steps 300 --eps 16 --alpha 1 --attack mifgsm
 uv run python vlm_eval.py --images-dir results/m_attack \
     --object dog --models llava-hf/llava-1.5-7b-hf
+
+# 17. region-level M-Attack PADDING SWEEP (dose-response): confine the crops +
+#     perturbation to the ROI expanded by a margin; sweep tight->whole-image to
+#     find the transition where LLaVA stops seeing the dog.
+uv run python m_attack_roi.py --pads 0,0.05,0.15,0.35,1.0 --steps 300 --eps 16
+uv run python vlm_eval.py --images-dir results/m_attack_roi \
+    --object dog --models llava-hf/llava-1.5-7b-hf
 ```
 
 Outputs land in `results/`: `stats_<tag>.txt` and `patch_analysis_<tag>.png`.
