@@ -1,0 +1,5 @@
+{"id": "dog", "image": "dataset/dog.png", "object": "dog", "mask": "masks/dog_mask.png", "target": "dataset/dog_removed.png"}
+{"id": "cat", "image": "dataset/cat.png", "object": "cat", "mask": "masks/cat_mask.png", "target": "dataset/cat_removed.png"}
+{"id": "car", "image": "dataset/car.png", "object": "car", "mask": "masks/car_mask.png", "target": "dataset/car_removed.png"}
+{"id": "airplane", "image": "dataset/airplane.png", "object": "airplane", "mask": "masks/airplane_mask.png", "target": "dataset/airplane_removed.png"}
+{"id": "school_zone_sign", "image": "dataset/school_zone_sign.png", "object": "sign", "mask": "masks/school_zone_sign_mask.png", "target": "dataset/school_zone_sign_removed.png"}
