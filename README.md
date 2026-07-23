@@ -165,6 +165,11 @@ uv run python m_attack_edge.py --dataset dataset.jsonl --seeds 5 --steps 300 --e
 uv run python vlm_eval_dataset.py --images-dir results/edge_gen --dataset dataset.jsonl \
     --models llava-hf/llava-1.5-7b-hf
 uv run python summarize_edge.py --dir results/edge_gen
+
+# 23. END-TO-END: optimize LLaVA's ANSWER LOGIT directly (no CLIP proxy), per
+#     object. Tests if directly attacking the decoder flips the answer where
+#     CLIP-cosine failed -- the predicted soft(dog/cat)/hard(sign/car) split.
+uv run python vlm_logit_loss.py --dataset dataset.jsonl --budgets 8,16,32 --steps 150
 ```
 
 Outputs land in `results/`: `stats_<tag>.txt` and `patch_analysis_<tag>.png`.
