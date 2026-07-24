@@ -1,26 +1,33 @@
-"""Stage 25: reproduce AdvEDM-R (semantic removal by patch-token nulling) and
-test it under STRICT source-absence, not just caption-mention.
+"""Stage 25 + 26: AdvEDM-R (patch-token nulling) with optional MULTI-LAYER DEEP
+FEATURE ERASURE (deep supervision), tested under STRICT source-absence.
 
 AdvEDM-R (Eqs 3-8): null the object-region patch tokens toward a zeroed image,
 suppress CLS-vs-object-text, and fixate attention to preserve the rest.
-  L_cls = CS(cls_adv, E_t(obj))                                   # push CLS off object-text (min)
-  L_p   = -mean_{i in obj} CS(patch_adv[i], patch_zeroed[i])      # null obj tokens toward zeroed img
-  L_fix = -mean_{j in bg}  A_clean[j] * CS(patch_adv[j], patch_clean[j])  # attention-weighted preserve
+  L_cls = CS(cls_adv, E_t(obj))                                        # push CLS off object-text (min)
+  L_p   = -mean_{i in obj} CS(patch_adv[-1][i], patch_zeroed[-1][i])   # null obj tokens at ENCODER OUTPUT
+  L_fix = -mean_{j in bg}  A_clean[j] * CS(patch_adv[-1][j], patch_clean[-1][j])  # attn-weighted preserve
   L = w1 L_cls + w2 L_p + w3 L_fix     (w1=0.5, w2=2, w3=0.2), Adam lr=5e-3, 500 it, L2 ball.
 
-CRITICAL LAYER NOTE: AdvEDM matches the CLIP ENCODER-OUTPUT patch tokens
-(hidden_states[-1]); LLaVA's decoder reads the PENULTIMATE (-2) tokens. We attack
-[-1] (faithful) and DIAGNOSE at [-2] (what the victim reads) -- if nulling [-1]
-leaves [-2] object-y, that explains a weak/strict gap.
+DEEP SUPERVISION (arm 'deep', --w-inter>0): ALSO null obj tokens at INTERMEDIATE
+layers l in --inter-layers (default L/3, 2L/3). In shallow layers patch tokens are
+still spatially local and less globally entangled, so erasing the object early is
+meant to cut its info flow before deeper layers can reconstruct it:
+  L_p_inter = mean_l [ -mean_{i in obj} CS(patch_adv[l][i], patch_zeroed[l][i]) ]
+  L = ... + w_inter * L_p_inter
+Run --arms base,deep to A/B last-layer-only vs +intermediate under identical seeds.
 
-Region mask: (a) 'seg' = provided segmentation -> token grid; (b) 'sim' = top-20%
-patches by CS(patch, E_t(obj)) (their Eq 3-4). Run both.
+CRITICAL LAYER NOTE: AdvEDM matches the CLIP ENCODER-OUTPUT tokens (hidden_states
+[-1]); LLaVA's decoder reads the PENULTIMATE (-2) tokens. We attack [-1] (+inter)
+and DIAGNOSE at [-2] (what the victim reads). The deep-supervision hypothesis is
+that erasing early forces [-2] object-free too; diagnostics test it directly
+(objpatch_cos_zero_inter = did inter nulling take; roiP@-2 = did it reach LLaVA's layer).
 
-Eval: WEAK (their metric) = object mentioned in "Describe this image."? vs
-STRICT (ours) = object absent under ALL of {direct, list, presup, describe-detail,
-read-text(sign)}. Full captions logged. 5 seeds, victim = LLaVA-1.5-7b.
+Region mask: (a) 'seg' = segmentation -> token grid; (b) 'sim' = top-20% patches by
+CS(patch, E_t(obj)). Eval: WEAK = object in "Describe this image."? vs STRICT =
+absent under ALL of {direct, list, presup, detail, read-text(sign)}. 5 seeds, LLaVA-1.5-7b.
 
-    uv run python advedm_r.py --dataset dataset.jsonl --regions seg,sim --budgets 20,40,80 --seeds 5
+    uv run python advedm_r.py --dataset dataset.jsonl --regions seg,sim \\
+        --budgets 20,40,80 --seeds 5 --arms base,deep --inter-layers 8,16
 """
 
 import argparse
@@ -62,6 +69,10 @@ def main():
     ap.add_argument("--w2", type=float, default=2.0)
     ap.add_argument("--w3", type=float, default=0.2)
     ap.add_argument("--topk", type=float, default=0.20)
+    ap.add_argument("--inter-layers", default="",
+                    help="intermediate layers for deep supervision: ints (abs idx) or floats in (0,1) (depth frac); empty=L/3,2L/3")
+    ap.add_argument("--w-inter", type=float, default=1.0, help="weight alpha on intermediate-layer nulling loss")
+    ap.add_argument("--arms", default="deep", help="comma list of {base,deep}: base=last-layer-only (w_inter=0), deep=+intermediate")
     ap.add_argument("--outdir", default="results/advedm_r")
     args = ap.parse_args()
     RES = args.res
@@ -84,6 +95,24 @@ def main():
     print("LAYER: attack matches encoder-output patch tokens hidden_states[-1]; "
           "diagnostics read penultimate hidden_states[-2] (LLaVA's input)")
 
+    NL = clip.config.vision_config.num_hidden_layers  # 24 for ViT-L/14; hidden_states has NL+1 entries (0=embeds)
+
+    def parse_layers(spec):
+        if not spec.strip():
+            return sorted({round(NL / 3), round(2 * NL / 3)})
+        out = []
+        for t in spec.split(","):
+            t = t.strip()
+            if not t:
+                continue
+            v = float(t)
+            out.append(max(1, min(NL, round(v * NL) if 0 < v < 1 else int(v))))
+        return sorted(set(out))
+    inter_layers = parse_layers(args.inter_layers)
+    arms = [a.strip() for a in args.arms.split(",") if a.strip()]
+    print(f"deep-supervision layers (of {NL}): {inter_layers} "
+          f"(depths {[round(l / NL, 2) for l in inter_layers]}); arms={arms} w_inter={args.w_inter}")
+
     def txt_emb(words):
         tk = cproc(text=words, return_tensors="pt", padding=True).to(DEVICE)
         return F.normalize(clip.text_projection(clip.text_model(**tk).pooler_output), dim=-1)
@@ -100,7 +129,7 @@ def main():
         if want_attn:
             att = torch.stack(out.attentions).mean(0).mean(1)   # mean over layers, then heads -> (1,seq,seq)
             A = att[:, 0, 1:]                                    # CLS -> patch attention (1, P)
-        return dict(cls=cls, last=patch_last, penult=patch_penult, attn=A)
+        return dict(cls=cls, last=patch_last, penult=patch_penult, attn=A, hs=out.hidden_states)
 
     def load01(p):
         img = Image.open(p).convert("RGB").resize((RES, RES), Image.BICUBIC)
@@ -121,9 +150,10 @@ def main():
     budgets = [float(b) for b in args.budgets.split(",")]
     os.makedirs(args.outdir, exist_ok=True)
 
-    ans_rows = [["object", "region", "eps", "seed", "criterion", "prompt", "answer_text", "object_present"]]
-    diag_rows = [["object", "region", "eps", "seed", "cls_cos_obj", "objpatch_cos_zero", "roiP_penult_layer-2"]]
-    curve_rows = [["object", "region", "eps", "seed", "iter", "L_cls", "L_p", "L_fix"]]
+    ans_rows = [["arm", "object", "region", "eps", "seed", "criterion", "prompt", "answer_text", "object_present"]]
+    diag_rows = [["arm", "object", "region", "eps", "seed", "cls_cos_obj", "objpatch_cos_zero",
+                  "objpatch_cos_zero_inter", "roiP_penult_layer-2"]]
+    curve_rows = [["arm", "object", "region", "eps", "seed", "iter", "L_cls", "L_p", "L_p_inter", "L_fix"]]
     printed_shapes = False
 
     for s in samples:
@@ -140,6 +170,8 @@ def main():
         xM = x0 * (1 - mpix)
         clean = vis(x0, want_attn=True)
         featM = vis(xM)
+        # zeroed-image references at the intermediate layers (normalized, detached), for deep supervision
+        featM_inter = [F.normalize(featM["hs"][l][:, 1:].squeeze(0), dim=-1).detach() for l in inter_layers]
         if not printed_shapes:
             print(f"SHAPES: patch_last={tuple(clean['last'].shape)} attn A(CLS->patch)={tuple(clean['attn'].shape)}")
             printed_shapes = True
@@ -170,54 +202,68 @@ def main():
             clean_last = clean["last"].squeeze(0).detach()
             print(f"\n=== {sid} '{obj}' region={region} ({int(obj_idx.sum())}/{GRID*GRID} obj tokens) ===")
 
-            for b in budgets:
-                for seed in range(args.seeds):
-                    g = torch.Generator(device=DEVICE).manual_seed(7000 + seed)
-                    delta = (torch.rand(x0.shape, generator=g, device=DEVICE) * 2 - 1) * (b / (RES * 1.7))
-                    delta = delta.detach().requires_grad_(True)
-                    opt = torch.optim.Adam([delta], lr=args.lr)
-                    for it in range(args.iters):
-                        x = torch.clamp(x0 + delta, 0, 1)
-                        f = vis(x, want_attn=False)   # L_fix uses fixed clean attention weights
-                        L_cls = (f["cls"].squeeze(0) @ E_t)                                    # min -> away from obj text
-                        pl = F.normalize(f["last"].squeeze(0), dim=-1)
-                        Lp = -(pl[obj_idx] * F.normalize(featM_last, dim=-1)[obj_idx]).sum(-1).mean()
-                        w = A_clean[bg_idx]; w = w / w.sum().clamp_min(1e-9)
-                        cs_bg = (pl[bg_idx] * F.normalize(clean_last, dim=-1)[bg_idx]).sum(-1)
-                        Lfix = -(w * cs_bg).sum()
-                        L = args.w1 * L_cls + args.w2 * Lp + args.w3 * Lfix
-                        opt.zero_grad(); L.backward(); opt.step()
+            for arm in arms:
+                w_inter = args.w_inter if arm == "deep" else 0.0
+                for b in budgets:
+                    for seed in range(args.seeds):
+                        g = torch.Generator(device=DEVICE).manual_seed(7000 + seed)
+                        delta = (torch.rand(x0.shape, generator=g, device=DEVICE) * 2 - 1) * (b / (RES * 1.7))
+                        delta = delta.detach().requires_grad_(True)
+                        opt = torch.optim.Adam([delta], lr=args.lr)
+                        for it in range(args.iters):
+                            x = torch.clamp(x0 + delta, 0, 1)
+                            f = vis(x, want_attn=False)   # L_fix uses fixed clean attention weights
+                            L_cls = (f["cls"].squeeze(0) @ E_t)                                    # min -> away from obj text
+                            pl = F.normalize(f["last"].squeeze(0), dim=-1)
+                            Lp = -(pl[obj_idx] * F.normalize(featM_last, dim=-1)[obj_idx]).sum(-1).mean()
+                            # deep supervision: null obj tokens at intermediate layers toward the zeroed image
+                            Lp_inter = x0.new_zeros(())
+                            if w_inter and inter_layers:
+                                for i_l, l in enumerate(inter_layers):
+                                    pil = F.normalize(f["hs"][l][:, 1:].squeeze(0), dim=-1)
+                                    Lp_inter = Lp_inter - (pil[obj_idx] * featM_inter[i_l][obj_idx]).sum(-1).mean()
+                                Lp_inter = Lp_inter / len(inter_layers)
+                            w = A_clean[bg_idx]; w = w / w.sum().clamp_min(1e-9)
+                            cs_bg = (pl[bg_idx] * F.normalize(clean_last, dim=-1)[bg_idx]).sum(-1)
+                            Lfix = -(w * cs_bg).sum()
+                            L = args.w1 * L_cls + args.w2 * Lp + w_inter * Lp_inter + args.w3 * Lfix
+                            opt.zero_grad(); L.backward(); opt.step()
+                            with torch.no_grad():
+                                n = delta.flatten().norm(2)
+                                if n > b:
+                                    delta.mul_(b / n)
+                                delta.data = torch.clamp(x0 + delta, 0, 1) - x0
+                            if it % 50 == 0 or it == args.iters - 1:
+                                curve_rows.append([arm, obj, region, b, seed, it, round(L_cls.item(), 4),
+                                                   round(Lp.item(), 4), round(float(Lp_inter), 4), round(Lfix.item(), 4)])
+
+                        adv = torch.clamp(x0 + delta.detach(), 0, 1)
                         with torch.no_grad():
-                            n = delta.flatten().norm(2)
-                            if n > b:
-                                delta.mul_(b / n)
-                            delta.data = torch.clamp(x0 + delta, 0, 1) - x0
-                        if it % 50 == 0 or it == args.iters - 1:
-                            curve_rows.append([obj, region, b, seed, it, round(L_cls.item(), 4),
-                                               round(Lp.item(), 4), round(Lfix.item(), 4)])
+                            fa = vis(adv)
+                            cls_cos = (fa["cls"].squeeze(0) @ E_t).item()
+                            opc = (F.normalize(fa["last"].squeeze(0), dim=-1)[obj_idx] *
+                                   F.normalize(featM_last, dim=-1)[obj_idx]).sum(-1).mean().item()
+                            opc_inter = float(np.mean([  # did the intermediate nulling take?
+                                (F.normalize(fa["hs"][l][:, 1:].squeeze(0), dim=-1)[obj_idx] *
+                                 featM_inter[i_l][obj_idx]).sum(-1).mean().item()
+                                for i_l, l in enumerate(inter_layers)])) if inter_layers else float("nan")
+                            pen = F.normalize(clip.visual_projection(fa["penult"].squeeze(0)), dim=-1)
+                            roiP = ((pen[obj_idx] @ label_txt.T) * 100).softmax(-1)[:, 0].mean().item()
+                        diag_rows.append([arm, obj, region, b, seed, round(cls_cos, 4), round(opc, 4),
+                                          round(opc_inter, 4), round(roiP, 4)])
 
-                    adv = torch.clamp(x0 + delta.detach(), 0, 1)
-                    with torch.no_grad():
-                        fa = vis(adv)
-                        cls_cos = (fa["cls"].squeeze(0) @ E_t).item()
-                        opc = (F.normalize(fa["last"].squeeze(0), dim=-1)[obj_idx] *
-                               F.normalize(featM_last, dim=-1)[obj_idx]).sum(-1).mean().item()
-                        pen = F.normalize(clip.visual_projection(fa["penult"].squeeze(0)), dim=-1)
-                        roiP = ((pen[obj_idx] @ label_txt.T) * 100).softmax(-1)[:, 0].mean().item()
-                    diag_rows.append([obj, region, b, seed, round(cls_cos, 4), round(opc, 4), round(roiP, 4)])
-
-                    linf = (delta.detach().abs().max().item()) * 255
-                    # WEAK (their metric)
-                    wa = gen(adv, weak_prompt)
-                    ans_rows.append([obj, region, b, seed, "weak", "describe", wa.replace("\n", " ")[:200], present(wa, obj)])
-                    # STRICT (ours)
-                    strict_present = False
-                    for pk, pt in prompts.items():
-                        a = gen(adv, pt); p = present(a, obj); strict_present = strict_present or p
-                        ans_rows.append([obj, region, b, seed, "strict", pk, a.replace("\n", " ")[:200], p])
-                    print(f"  eps={b:>4.0f} L2 seed={seed} Linf={linf:.0f}/255 | cls_cos_obj={cls_cos:.3f} "
-                          f"objpatch_cos_zero={opc:.3f} roiP@-2={roiP:.3f} | weak_absent={not present(wa,obj)} "
-                          f"strict_absent={not strict_present}")
+                        linf = (delta.detach().abs().max().item()) * 255
+                        # WEAK (their metric)
+                        wa = gen(adv, weak_prompt)
+                        ans_rows.append([arm, obj, region, b, seed, "weak", "describe", wa.replace("\n", " ")[:200], present(wa, obj)])
+                        # STRICT (ours)
+                        strict_present = False
+                        for pk, pt in prompts.items():
+                            a = gen(adv, pt); p = present(a, obj); strict_present = strict_present or p
+                            ans_rows.append([arm, obj, region, b, seed, "strict", pk, a.replace("\n", " ")[:200], p])
+                        print(f"  [{arm}] eps={b:>4.0f} L2 seed={seed} Linf={linf:.0f}/255 | cls_cos_obj={cls_cos:.3f} "
+                              f"objpatch_cos_zero={opc:.3f} inter={opc_inter:.3f} roiP@-2={roiP:.3f} | "
+                              f"weak_absent={not present(wa,obj)} strict_absent={not strict_present}")
 
     for name, rows in [("answers", ans_rows), ("diagnostics", diag_rows), ("curves", curve_rows)]:
         with open(f"{args.outdir}/{name}.csv", "w", newline="") as f:
@@ -227,23 +273,27 @@ def main():
     from collections import defaultdict
     grp = defaultdict(lambda: {"weak": defaultdict(list), "strict": defaultdict(list)})
     for r in ans_rows[1:]:
-        obj, region, eps, seed, crit, prompt, txt, pres = r
-        grp[(obj, region, eps)][crit][seed].append(pres == "True" or pres is True)
+        arm, obj, region, eps, seed, crit, prompt, txt, pres = r
+        grp[(arm, obj, region, eps)][crit][seed].append(pres == "True" or pres is True)
     print("\n=== WEAK (caption-mention) vs STRICT (all-probe conjunction) removal rate ===")
-    print(f"{'object':<10}{'region':<6}{'eps':>5}{'weak_removal%':>15}{'strict_removal%':>17}")
-    summ = [["object", "region", "eps", "weak_removal_rate", "strict_removal_rate", "n"]]
-    for (obj, region, eps), d in sorted(grp.items()):
+    print(f"{'arm':<6}{'object':<10}{'region':<6}{'eps':>5}{'weak_removal%':>15}{'strict_removal%':>17}")
+    summ = [["arm", "object", "region", "eps", "weak_removal_rate", "strict_removal_rate", "n"]]
+    for (arm, obj, region, eps), d in sorted(grp.items()):
         weak_rem = 100 * np.mean([not any(v) for v in d["weak"].values()])      # removed if not present
         strict_rem = 100 * np.mean([not any(v) for v in d["strict"].values()])
         n = len(d["strict"])
-        summ.append([obj, region, eps, round(weak_rem, 1), round(strict_rem, 1), n])
-        print(f"{obj:<10}{region:<6}{eps:>5}{weak_rem:>14.0f}%{strict_rem:>16.0f}%")
+        summ.append([arm, obj, region, eps, round(weak_rem, 1), round(strict_rem, 1), n])
+        print(f"{arm:<6}{obj:<10}{region:<6}{eps:>5}{weak_rem:>14.0f}%{strict_rem:>16.0f}%")
     with open(f"{args.outdir}/summary.csv", "w", newline="") as f:
         csv.writer(f).writerows(summ)
     print(f"\nsaved {args.outdir}/{{answers,diagnostics,curves,summary}}.csv")
     print("READ: weak>>strict => nulling only removes the caption mention, object survives direct probing "
           "(check diagnostics: objpatch_cos_zero high [L_p worked at -1] but roiP@-2 still high => didn't "
           "propagate to the layer LLaVA reads). Weight on dog/cat/sign.")
+    print("DEEP-SUPERVISION A/B (base vs deep): if deep raises strict_removal AND drops roiP@-2, erasing early "
+          "propagated to LLaVA's layer -> the idea works. If deep nulls intermediate (objpatch_cos_zero_inter->1) "
+          "yet roiP@-2 stays high and strict_removal doesn't move -> later layers reconstruct the object through "
+          "the residual stream; deep supervision doesn't reach the layer the decoder reads either.")
 
 
 if __name__ == "__main__":
