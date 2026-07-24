@@ -176,6 +176,12 @@ uv run python vlm_logit_loss.py --dataset dataset.jsonl --budgets 8,16,32 --step
 #     seeds; graded end-to-end on LLaVA under held-out prompts (conjunction).
 #     Companion: pixel-interpolation flip-point (what removal actually costs).
 uv run python region_token_match.py --dataset dataset.jsonl --budgets 8,16,32,64,128 --seeds 5
+
+# 25. reproduce AdvEDM-R (patch-token nulling + CLS-suppress + attn-fixation,
+#     L2/Adam) and test WEAK (their caption-mention metric) vs STRICT (our
+#     all-probe conjunction). Attacks encoder-output [-1]; diagnoses at [-2]
+#     (LLaVA's input). The weak-vs-strict gap is the finding.
+uv run python advedm_r.py --dataset dataset.jsonl --regions seg,sim --budgets 20,40,80 --seeds 5
 ```
 
 Outputs land in `results/`: `stats_<tag>.txt` and `patch_analysis_<tag>.png`.
