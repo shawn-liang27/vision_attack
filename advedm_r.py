@@ -66,7 +66,8 @@ def main():
     args = ap.parse_args()
     RES = args.res
 
-    clip = CLIPModel.from_pretrained(args.surrogate).to(DEVICE).eval()
+    # eager attention so output_attentions actually returns weights (SDPA returns None) -- needed for L_fix
+    clip = CLIPModel.from_pretrained(args.surrogate, attn_implementation="eager").to(DEVICE).eval()
     clip.requires_grad_(False)
     cproc = CLIPProcessor.from_pretrained(args.surrogate)
     ipc = cproc.image_processor
@@ -177,7 +178,7 @@ def main():
                     opt = torch.optim.Adam([delta], lr=args.lr)
                     for it in range(args.iters):
                         x = torch.clamp(x0 + delta, 0, 1)
-                        f = vis(x, want_attn=True)
+                        f = vis(x, want_attn=False)   # L_fix uses fixed clean attention weights
                         L_cls = (f["cls"].squeeze(0) @ E_t)                                    # min -> away from obj text
                         pl = F.normalize(f["last"].squeeze(0), dim=-1)
                         Lp = -(pl[obj_idx] * F.normalize(featM_last, dim=-1)[obj_idx]).sum(-1).mean()
