@@ -170,6 +170,12 @@ uv run python summarize_edge.py --dir results/edge_gen
 #     object. Tests if directly attacking the decoder flips the answer where
 #     CLIP-cosine failed -- the predicted soft(dog/cat)/hard(sign/car) split.
 uv run python vlm_logit_loss.py --dataset dataset.jsonl --budgets 8,16,32 --steps 150
+
+# 24. region-level PATCH-TOKEN matching to the inpaint target, at LLaVA's exact
+#     projector-input layer (hook verified). Whole-image L_inf, eps sweep, 5
+#     seeds; graded end-to-end on LLaVA under held-out prompts (conjunction).
+#     Companion: pixel-interpolation flip-point (what removal actually costs).
+uv run python region_token_match.py --dataset dataset.jsonl --budgets 8,16,32,64,128 --seeds 5
 ```
 
 Outputs land in `results/`: `stats_<tag>.txt` and `patch_analysis_<tag>.png`.
