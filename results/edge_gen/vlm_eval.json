@@ -1,0 +1,760 @@
+{
+  "llava-hf/llava-1.5-7b-hf": {
+    "airplane__baseline.png": {
+      "object": "airplane",
+      "binary": "There are three airplanes visible in the image. The biggest airplane is facing the airport terminal.",
+      "describe": "A large white airplane is parked on the runway in front of a large building.",
+      "detected": true
+    },
+    "airplane__edge_v1_seed0.png": {
+      "object": "airplane",
+      "binary": "There are three airplanes visible in the image. The biggest airplane is facing the airport terminal.",
+      "describe": "A large airport with several airplanes parked on the tarmac.",
+      "detected": true
+    },
+    "airplane__edge_v1_seed1.png": {
+      "object": "airplane",
+      "binary": "There are three airplanes visible in the image. The biggest airplane is facing the airport terminal.",
+      "describe": "A large white airplane is parked on the tarmac at an airport.",
+      "detected": true
+    },
+    "airplane__edge_v1_seed2.png": {
+      "object": "airplane",
+      "binary": "There are three airplanes visible in the image. The biggest airplane is facing the camera, and the other two airplanes are parked behind it.",
+      "describe": "A large airport with several airplanes parked on the tarmac.",
+      "detected": true
+    },
+    "airplane__edge_v1_seed3.png": {
+      "object": "airplane",
+      "binary": "There are three airplanes visible in the image. The biggest airplane is facing the airport terminal.",
+      "describe": "A large airport with several airplanes parked on the tarmac.",
+      "detected": true
+    },
+    "airplane__edge_v1_seed4.png": {
+      "object": "airplane",
+      "binary": "There are three airplanes visible in the image. The biggest airplane is facing the airport terminal.",
+      "describe": "A large airport with several airplanes parked on the tarmac.",
+      "detected": true
+    },
+    "airplane__edge_v2_seed0.png": {
+      "object": "airplane",
+      "binary": "There are three airplanes visible in the image. The biggest airplane is facing the airport terminal.",
+      "describe": "A large white airplane is parked on the tarmac in front of a large building.",
+      "detected": true
+    },
+    "airplane__edge_v2_seed1.png": {
+      "object": "airplane",
+      "binary": "There are three airplanes visible in the image. The biggest airplane is facing the airport terminal.",
+      "describe": "A large airport with several airplanes parked on the tarmac.",
+      "detected": true
+    },
+    "airplane__edge_v2_seed2.png": {
+      "object": "airplane",
+      "binary": "There are four airplanes visible in the image. The biggest airplane is facing the airport terminal.",
+      "describe": "A large airport with several airplanes parked on the tarmac.",
+      "detected": true
+    },
+    "airplane__edge_v2_seed3.png": {
+      "object": "airplane",
+      "binary": "There are three airplanes visible in the image. The biggest airplane is facing the airport terminal.",
+      "describe": "A large airport with several airplanes parked on the tarmac.",
+      "detected": true
+    },
+    "airplane__edge_v2_seed4.png": {
+      "object": "airplane",
+      "binary": "There are three airplanes visible in the image. The biggest airplane is facing the airport terminal.",
+      "describe": "A large airport with several airplanes parked on the tarmac.",
+      "detected": true
+    },
+    "airplane__pad0.15_seed0.png": {
+      "object": "airplane",
+      "binary": "There are four airplanes visible in the image. The biggest airplane is facing the airport terminal.",
+      "describe": "A large airplane is parked at the airport.",
+      "detected": true
+    },
+    "airplane__pad0.15_seed1.png": {
+      "object": "airplane",
+      "binary": "There are four airplanes visible in the image. The biggest airplane is facing the camera, and it is parked in front of a large building.",
+      "describe": "A large white airplane is parked on the tarmac at an airport.",
+      "detected": true
+    },
+    "airplane__pad0.15_seed2.png": {
+      "object": "airplane",
+      "binary": "There are three airplanes visible in the image. The biggest airplane is facing the camera, and the other two airplanes are parked behind it.",
+      "describe": "A large airport with several airplanes parked on the tarmac.",
+      "detected": true
+    },
+    "airplane__pad0.15_seed3.png": {
+      "object": "airplane",
+      "binary": "There are four airplanes visible in the image. The biggest airplane is facing the camera, and it is parked in front of a large building.",
+      "describe": "A large white airplane is parked on the tarmac at an airport.",
+      "detected": true
+    },
+    "airplane__pad0.15_seed4.png": {
+      "object": "airplane",
+      "binary": "There are four airplanes visible in the image. The biggest airplane is facing the camera, and it is parked in front of a large building.",
+      "describe": "A large airport with several airplanes parked on the tarmac.",
+      "detected": true
+    },
+    "airplane__pad0_seed0.png": {
+      "object": "airplane",
+      "binary": "There are four airplanes visible in the image. The biggest airplane is facing the airport terminal.",
+      "describe": "An airport with several airplanes parked on the tarmac.",
+      "detected": true
+    },
+    "airplane__pad0_seed1.png": {
+      "object": "airplane",
+      "binary": "There are three airplanes visible in the image. The biggest airplane is facing the airport terminal.",
+      "describe": "A large white airplane is parked on the tarmac in front of a large building.",
+      "detected": true
+    },
+    "airplane__pad0_seed2.png": {
+      "object": "airplane",
+      "binary": "There are three airplanes visible in the image. The biggest airplane is facing the airport terminal.",
+      "describe": "A large airplane is parked at the airport.",
+      "detected": true
+    },
+    "airplane__pad0_seed3.png": {
+      "object": "airplane",
+      "binary": "There are three airplanes visible in the image. The biggest airplane is facing the airport terminal.",
+      "describe": "A large white airplane is parked on the tarmac in front of a large building.",
+      "detected": true
+    },
+    "airplane__pad0_seed4.png": {
+      "object": "airplane",
+      "binary": "There are four airplanes visible in the image. The biggest airplane is facing the airport terminal.",
+      "describe": "A large airplane is parked on the tarmac in front of a large building.",
+      "detected": true
+    },
+    "car__baseline.png": {
+      "object": "car",
+      "binary": "The color of the vehicle to the right of the man on the bike is white. It is a white SUV.",
+      "describe": "A man riding a bike is crossing the street in front of a white car.",
+      "detected": true
+    },
+    "car__edge_v1_seed0.png": {
+      "object": "car",
+      "binary": "The color of the vehicle to the right of the man on the bike is white. It is a large white truck.",
+      "describe": "A man rides a bicycle down a busy street with cars and trucks around him.",
+      "detected": true
+    },
+    "car__edge_v1_seed1.png": {
+      "object": "car",
+      "binary": "The color of the vehicle to the right of the man on the bike is white. It is a large white truck.",
+      "describe": "A man rides a bike down a busy street with cars and trucks around him.",
+      "detected": true
+    },
+    "car__edge_v1_seed2.png": {
+      "object": "car",
+      "binary": "The color of the vehicle to the right of the man on the bike is white. It is a large white truck.",
+      "describe": "A man rides a bike down a busy street with cars and trucks.",
+      "detected": true
+    },
+    "car__edge_v1_seed3.png": {
+      "object": "car",
+      "binary": "The color of the vehicle to the right of the man on the bike is white. It is a white van.",
+      "describe": "A woman riding a bike on a busy street with cars and trucks.",
+      "detected": true
+    },
+    "car__edge_v1_seed4.png": {
+      "object": "car",
+      "binary": "The color of the vehicle to the right of the man on the bike is white. It is a large white truck.",
+      "describe": "A man riding a bike in front of a white truck.",
+      "detected": false
+    },
+    "car__edge_v2_seed0.png": {
+      "object": "car",
+      "binary": "The color of the vehicle to the right of the man on the bike is white. It is a large white truck.",
+      "describe": "A man riding a bike in front of a white truck.",
+      "detected": false
+    },
+    "car__edge_v2_seed1.png": {
+      "object": "car",
+      "binary": "The color of the vehicle to the right of the man on the bike is white. It is a large white truck.",
+      "describe": "A man riding a bike in front of a white truck.",
+      "detected": false
+    },
+    "car__edge_v2_seed2.png": {
+      "object": "car",
+      "binary": "The color of the vehicle to the right of the man on the bike is white. It is a large white truck.",
+      "describe": "A man riding a bike in front of a white truck.",
+      "detected": false
+    },
+    "car__edge_v2_seed3.png": {
+      "object": "car",
+      "binary": "The color of the vehicle to the right of the man on the bike is white. It is a large white truck.",
+      "describe": "A man riding a bike in front of a white truck.",
+      "detected": false
+    },
+    "car__edge_v2_seed4.png": {
+      "object": "car",
+      "binary": "The color of the vehicle to the right of the man on the bike is white. It is a large white truck.",
+      "describe": "A man riding a bike in front of a white truck.",
+      "detected": false
+    },
+    "car__pad0.15_seed0.png": {
+      "object": "car",
+      "binary": "The color of the vehicle to the right of the man on the bike is white. It is a white car.",
+      "describe": "A woman riding a bike on a busy street with cars and trucks.",
+      "detected": true
+    },
+    "car__pad0.15_seed1.png": {
+      "object": "car",
+      "binary": "The color of the vehicle to the right of the man on the bike is white. It is a white car.",
+      "describe": "A man rides a bike down a busy street with cars and trucks around him.",
+      "detected": true
+    },
+    "car__pad0.15_seed2.png": {
+      "object": "car",
+      "binary": "The color of the vehicle to the right of the man on the bike is white. It is a white car.",
+      "describe": "A man rides a bike down a busy street with cars and trucks.",
+      "detected": true
+    },
+    "car__pad0.15_seed3.png": {
+      "object": "car",
+      "binary": "The color of the vehicle to the right of the man on the bike is white. It is a white SUV.",
+      "describe": "A man riding a bike on a busy street with cars and trucks.",
+      "detected": true
+    },
+    "car__pad0.15_seed4.png": {
+      "object": "car",
+      "binary": "The color of the vehicle to the right of the man on the bike is white. It is a white car.",
+      "describe": "A man riding a bike on a busy street with cars and trucks.",
+      "detected": true
+    },
+    "car__pad0_seed0.png": {
+      "object": "car",
+      "binary": "The color of the vehicle to the right of the man on the bike is white. It is a large white truck.",
+      "describe": "A man riding a bike in front of a white truck.",
+      "detected": false
+    },
+    "car__pad0_seed1.png": {
+      "object": "car",
+      "binary": "The color of the vehicle to the right of the man on the bike is white. It is a large white truck.",
+      "describe": "A man riding a bike in front of a white truck.",
+      "detected": false
+    },
+    "car__pad0_seed2.png": {
+      "object": "car",
+      "binary": "The color of the vehicle to the right of the man on the bike is white. It is a large white truck.",
+      "describe": "A man riding a bike in front of a white truck.",
+      "detected": false
+    },
+    "car__pad0_seed3.png": {
+      "object": "car",
+      "binary": "The color of the vehicle to the right of the man on the bike is white. It is a large white truck.",
+      "describe": "A man riding a bike in front of a white truck.",
+      "detected": false
+    },
+    "car__pad0_seed4.png": {
+      "object": "car",
+      "binary": "The color of the vehicle to the right of the man on the bike is white. It is a large white truck.",
+      "describe": "A man riding a bike in front of a white truck.",
+      "detected": false
+    },
+    "cat__baseline.png": {
+      "object": "cat",
+      "binary": "Yes, there is a cat in this image.",
+      "describe": "A cat is sitting on a bookshelf in front of a window.",
+      "detected": true
+    },
+    "cat__edge_v1_seed0.png": {
+      "object": "cat",
+      "binary": "No, there is no cat in this image.",
+      "describe": "A window with a view of a city street is open, and a vase of flowers is placed on a table.",
+      "detected": false
+    },
+    "cat__edge_v1_seed1.png": {
+      "object": "cat",
+      "binary": "No, there is no cat in this image.",
+      "describe": "A room with a window, a vase, a cat statue, and a bookshelf.",
+      "detected": true
+    },
+    "cat__edge_v1_seed2.png": {
+      "object": "cat",
+      "binary": "Yes, there is a cat in the image, sitting on a shelf in front of a window.",
+      "describe": "A room with a window, a cat statue, and a bookshelf with many books.",
+      "detected": true
+    },
+    "cat__edge_v1_seed3.png": {
+      "object": "cat",
+      "binary": "Yes, there is a cat in the image, sitting on a window sill.",
+      "describe": "A living room with a window, a couch, and a bookshelf filled with books.",
+      "detected": true
+    },
+    "cat__edge_v1_seed4.png": {
+      "object": "cat",
+      "binary": "No, there is no cat in this image.",
+      "describe": "A living room with a window, a couch, and a bookshelf filled with books.",
+      "detected": false
+    },
+    "cat__edge_v2_seed0.png": {
+      "object": "cat",
+      "binary": "No, there is no cat in this image.",
+      "describe": "A living room with a couch, books, and a vase of flowers.",
+      "detected": false
+    },
+    "cat__edge_v2_seed1.png": {
+      "object": "cat",
+      "binary": "No, there is no cat in this image.",
+      "describe": "A living room with a couch, books, and a vase with a plant in it.",
+      "detected": false
+    },
+    "cat__edge_v2_seed2.png": {
+      "object": "cat",
+      "binary": "No, there is no cat in this image.",
+      "describe": "A living room with a couch, books, and a vase of flowers.",
+      "detected": false
+    },
+    "cat__edge_v2_seed3.png": {
+      "object": "cat",
+      "binary": "Yes, there is a cat in the image, sitting on a table in front of a window.",
+      "describe": "A living room with a couch, books, and a vase.",
+      "detected": true
+    },
+    "cat__edge_v2_seed4.png": {
+      "object": "cat",
+      "binary": "No, there is no cat in this image.",
+      "describe": "A living room with a window, a couch, and a bookshelf.",
+      "detected": false
+    },
+    "cat__pad0.15_seed0.png": {
+      "object": "cat",
+      "binary": "Yes, there is a cat in the image, sitting on a table near a window.",
+      "describe": "A room with a window, a cat statue, and a bookshelf with books and a vase.",
+      "detected": true
+    },
+    "cat__pad0.15_seed1.png": {
+      "object": "cat",
+      "binary": "No, there is no cat in this image.",
+      "describe": "A window with a vase of flowers and a bookshelf with books and a vase of flowers.",
+      "detected": false
+    },
+    "cat__pad0.15_seed2.png": {
+      "object": "cat",
+      "binary": "Yes, there is a cat in the image, sitting in front of a window.",
+      "describe": "A cat statue is sitting on a table in front of a window.",
+      "detected": true
+    },
+    "cat__pad0.15_seed3.png": {
+      "object": "cat",
+      "binary": "No, there is no cat in this image. The image features a vase, a window, and a bookshelf with books.",
+      "describe": "A room with a window, a vase, books, and a couch.",
+      "detected": false
+    },
+    "cat__pad0.15_seed4.png": {
+      "object": "cat",
+      "binary": "Yes, there is a cat in the image, sitting on a table in front of a window.",
+      "describe": "A room with a window, a cat statue, and a bookshelf with many books.",
+      "detected": true
+    },
+    "cat__pad0_seed0.png": {
+      "object": "cat",
+      "binary": "No, there is no cat in this image.",
+      "describe": "A window with a vase of flowers and a bookshelf filled with books.",
+      "detected": false
+    },
+    "cat__pad0_seed1.png": {
+      "object": "cat",
+      "binary": "No, there is no cat in this image.",
+      "describe": "A window with a view of a tree is open, and a potted plant is sitting on a table next to a bookshelf.",
+      "detected": false
+    },
+    "cat__pad0_seed2.png": {
+      "object": "cat",
+      "binary": "No, there is no cat in this image.",
+      "describe": "A living room with a couch, books, and a vase of flowers.",
+      "detected": false
+    },
+    "cat__pad0_seed3.png": {
+      "object": "cat",
+      "binary": "No, there is no cat in this image.",
+      "describe": "A living room with a couch, books, and a vase of flowers.",
+      "detected": false
+    },
+    "cat__pad0_seed4.png": {
+      "object": "cat",
+      "binary": "No, there is no cat in this image.",
+      "describe": "A living room with a window, a couch, and a bookshelf filled with books.",
+      "detected": false
+    },
+    "dog__baseline.png": {
+      "object": "dog",
+      "binary": "Yes, there is a dog in the image. It is a small, brown and white dog sitting on a couch.",
+      "describe": "A brown and white dog is sitting on a couch.",
+      "detected": true
+    },
+    "dog__edge_v1_seed0.png": {
+      "object": "dog",
+      "binary": "Yes, there is a dog in the image. It is a small dog sitting on a couch, and it appears to be looking at the camera.",
+      "describe": "A dog statue is sitting on a couch next to a window.",
+      "detected": true
+    },
+    "dog__edge_v1_seed1.png": {
+      "object": "dog",
+      "binary": "Yes, there is a dog in the image. It is a stuffed dog sitting on a couch.",
+      "describe": "A stuffed dog is sitting on a couch next to a statue.",
+      "detected": true
+    },
+    "dog__edge_v1_seed2.png": {
+      "object": "dog",
+      "binary": "Yes, there is a dog in the image. It is a small dog sitting on a couch, which is located in a living room. The dog is positioned between two couches, and it appears to be looking at the camera.",
+      "describe": "A couch with a dog statue on it.",
+      "detected": true
+    },
+    "dog__edge_v1_seed3.png": {
+      "object": "dog",
+      "binary": "Yes, there is a dog in the image. It is a stuffed dog, which is placed on a table in front of a couch.",
+      "describe": "A green couch with a dog statue on it.",
+      "detected": true
+    },
+    "dog__edge_v1_seed4.png": {
+      "object": "dog",
+      "binary": "Yes, there is a dog in the image. It is a stuffed dog, which is placed on a couch.",
+      "describe": "A dog statue is sitting on a couch next to a window.",
+      "detected": true
+    },
+    "dog__edge_v2_seed0.png": {
+      "object": "dog",
+      "binary": "Yes, there is a dog in the image. It is a brown and white dog sitting on a couch.",
+      "describe": "A dog is sitting on a couch with a blanket on it.",
+      "detected": true
+    },
+    "dog__edge_v2_seed1.png": {
+      "object": "dog",
+      "binary": "Yes, there is a dog in the image. It is a brown and white dog sitting on a couch.",
+      "describe": "A dog is sitting on a couch with a brown and white coat.",
+      "detected": true
+    },
+    "dog__edge_v2_seed2.png": {
+      "object": "dog",
+      "binary": "Yes, there is a dog in the image. It is a brown and white dog sitting on a couch.",
+      "describe": "A brown and white dog is sitting on a couch.",
+      "detected": true
+    },
+    "dog__edge_v2_seed3.png": {
+      "object": "dog",
+      "binary": "Yes, there is a dog in the image. It is a brown and white dog sitting on a couch.",
+      "describe": "A dog is sitting on a couch with a white and black coat.",
+      "detected": true
+    },
+    "dog__edge_v2_seed4.png": {
+      "object": "dog",
+      "binary": "Yes, there is a dog in the image. It is a brown and white dog sitting on a couch.",
+      "describe": "A dog is sitting on a couch with a white and black coat.",
+      "detected": true
+    },
+    "dog__pad0.15_seed0.png": {
+      "object": "dog",
+      "binary": "No, there is no dog in this image. The image features a couch with a blanket on it, a clock on the wall, and a pile of books.",
+      "describe": "A couch with a blanket on it and a clock on the wall.",
+      "detected": false
+    },
+    "dog__pad0.15_seed1.png": {
+      "object": "dog",
+      "binary": "No, there is no dog in this image. The image features a couch with a clock on it, and a chair with a blanket on it.",
+      "describe": "A green couch with a clock on it.",
+      "detected": false
+    },
+    "dog__pad0.15_seed2.png": {
+      "object": "dog",
+      "binary": "Yes, there is a dog in the image. It is a small stuffed dog sitting on a table next to a couch.",
+      "describe": "A couch with a clock and a stuffed animal on it.",
+      "detected": true
+    },
+    "dog__pad0.15_seed3.png": {
+      "object": "dog",
+      "binary": "No, there is no dog in this image. The image features a couch with a pillow on it, a vase, and a book.",
+      "describe": "A green couch with a blue pillow and a vase on it.",
+      "detected": false
+    },
+    "dog__pad0.15_seed4.png": {
+      "object": "dog",
+      "binary": "Yes, there is a dog in the image. It is a small dog sitting on a couch, which is located in a living room. The dog is positioned between two pillows, and it appears to be looking at the camera.",
+      "describe": "A white elephant statue is sitting on a table in front of a couch.",
+      "detected": true
+    },
+    "dog__pad0_seed0.png": {
+      "object": "dog",
+      "binary": "Yes, there is a dog in the image. It is a brown and white dog sitting on a couch.",
+      "describe": "A dog is sitting on a couch with a stuffed animal in its mouth.",
+      "detected": true
+    },
+    "dog__pad0_seed1.png": {
+      "object": "dog",
+      "binary": "Yes, there is a dog in the image. It is a brown and white dog sitting on a couch.",
+      "describe": "A dog is sitting on a couch with a white and black color pattern.",
+      "detected": true
+    },
+    "dog__pad0_seed2.png": {
+      "object": "dog",
+      "binary": "Yes, there is a dog in the image. It is a brown and white dog sitting on a couch.",
+      "describe": "A dog is sitting on a couch with a stuffed animal in front of it.",
+      "detected": true
+    },
+    "dog__pad0_seed3.png": {
+      "object": "dog",
+      "binary": "Yes, there is a dog in the image. It is a brown and white dog sitting on a couch.",
+      "describe": "A dog is sitting on a couch with a stuffed animal.",
+      "detected": true
+    },
+    "dog__pad0_seed4.png": {
+      "object": "dog",
+      "binary": "Yes, there is a dog in the image. It is a brown and white dog sitting on a couch.",
+      "describe": "A dog is sitting on a couch with a stuffed animal in front of it.",
+      "detected": true
+    },
+    "plane__baseline.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "A United Airlines plane is parked on a wet runway.",
+      "detected": true
+    },
+    "plane__edge_v1_seed0.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane__edge_v1_seed1.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane__edge_v1_seed2.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane__edge_v1_seed3.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane__edge_v1_seed4.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane__edge_v2_seed0.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane__edge_v2_seed1.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane__edge_v2_seed2.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane__edge_v2_seed3.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane__edge_v2_seed4.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane__pad0.15_seed0.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane__pad0.15_seed1.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane__pad0.15_seed2.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are white and blue.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane__pad0.15_seed3.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane__pad0.15_seed4.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are white and blue.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane__pad0_seed0.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane__pad0_seed1.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane__pad0_seed2.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane__pad0_seed3.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane__pad0_seed4.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "school_zone_sign__baseline.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a speed limit sign in the image. It says \"School Speed Limit 20.\"",
+      "describe": "A yellow school bus is driving down a street with a speed limit sign in front of it.",
+      "detected": true
+    },
+    "school_zone_sign__edge_v1_seed0.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a speed limit sign in the image. It says \"20\" on it, indicating the maximum allowed speed for vehicles in the area.",
+      "describe": "A yellow school bus is driving down a street with a speed limit sign on the side of the road.",
+      "detected": true
+    },
+    "school_zone_sign__edge_v1_seed1.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a speed limit sign in the image. It says \"Schedule Limit 20.\"",
+      "describe": "A yellow school bus is driving down a street with a speed limit sign above it.",
+      "detected": true
+    },
+    "school_zone_sign__edge_v1_seed2.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a speed limit sign in the image. It says \"Schedule\" and is located near a yellow school bus.",
+      "describe": "A yellow school bus is driving down a street with a speed limit sign.",
+      "detected": true
+    },
+    "school_zone_sign__edge_v1_seed3.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a speed limit sign in the image. It says \"20\" and is located near a tree.",
+      "describe": "A yellow school bus is driving down a street with a speed limit sign in the background.",
+      "detected": true
+    },
+    "school_zone_sign__edge_v1_seed4.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a speed limit sign in the image. It says \"Schedule 20.\"",
+      "describe": "A yellow school bus is driving down a street with a speed limit sign on the side of the road.",
+      "detected": true
+    },
+    "school_zone_sign__edge_v2_seed0.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a speed limit sign in the image. It says \"20\" and is located near a tree.",
+      "describe": "A yellow school bus is driving down a street with a speed limit sign on the side of the road.",
+      "detected": true
+    },
+    "school_zone_sign__edge_v2_seed1.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a speed limit sign in the image. It says \"20\" and is located near a yellow school bus.",
+      "describe": "A yellow school bus is driving down a street with a speed limit sign on the side of the road.",
+      "detected": true
+    },
+    "school_zone_sign__edge_v2_seed2.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a speed limit sign in the image. It says \"20\" and is located near a tree.",
+      "describe": "A yellow school bus is driving down a street with a speed limit sign on the side of the road.",
+      "detected": true
+    },
+    "school_zone_sign__edge_v2_seed3.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a speed limit sign in the image. It says \"20\" and is located near a tree.",
+      "describe": "A yellow school bus is driving down a street with a speed limit sign on the side of the road.",
+      "detected": true
+    },
+    "school_zone_sign__edge_v2_seed4.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a speed limit sign in the image. It says \"20\" and is located near a tree.",
+      "describe": "A yellow school bus is driving down a street with a speed limit sign on the side of the road.",
+      "detected": true
+    },
+    "school_zone_sign__pad0.15_seed0.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a speed limit sign in the image. It says \"20\" and is located near a school zone sign.",
+      "describe": "A yellow school bus is driving down a street with a speed limit sign on the side of the road.",
+      "detected": true
+    },
+    "school_zone_sign__pad0.15_seed1.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a speed limit sign in the image. It says \"20\" and is located near a yellow school bus.",
+      "describe": "A yellow school bus is driving down a street with a speed limit sign on the side of the road.",
+      "detected": true
+    },
+    "school_zone_sign__pad0.15_seed2.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a speed limit sign in the image. It says \"School Speed Limit 20.\"",
+      "describe": "A yellow school bus is driving down a street with a speed limit sign in the background.",
+      "detected": true
+    },
+    "school_zone_sign__pad0.15_seed3.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a speed limit sign in the image. It says \"Schedule 20.\"",
+      "describe": "A yellow school bus is driving down a street with a speed limit sign in the background.",
+      "detected": true
+    },
+    "school_zone_sign__pad0.15_seed4.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a speed limit sign in the image. It says \"20\" and is located near a school zone sign.",
+      "describe": "A yellow school bus is driving down a street with a speed limit sign above it.",
+      "detected": true
+    },
+    "school_zone_sign__pad0_seed0.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a speed limit sign in the image. It says \"20\" and is located near a tree.",
+      "describe": "A yellow school bus is driving down a street with a speed limit sign on the side of the road.",
+      "detected": true
+    },
+    "school_zone_sign__pad0_seed1.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a speed limit sign in the image. It says \"20\" and is located near a yellow school bus.",
+      "describe": "A yellow school bus is driving down a street with a speed limit sign on the side of the road.",
+      "detected": true
+    },
+    "school_zone_sign__pad0_seed2.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a speed limit sign in the image. It says \"20\" and is located near a tree.",
+      "describe": "A yellow school bus is driving down a street with a speed limit sign on the side of the road.",
+      "detected": true
+    },
+    "school_zone_sign__pad0_seed3.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a speed limit sign in the image. It says \"20\" and is located near a tree.",
+      "describe": "A yellow school bus is driving down a street with a speed limit sign on the side of the road.",
+      "detected": true
+    },
+    "school_zone_sign__pad0_seed4.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a speed limit sign in the image. It says \"20\" and is located near a tree.",
+      "describe": "A yellow school bus is driving down a street with a speed limit sign in the background.",
+      "detected": true
+    }
+  }
+}

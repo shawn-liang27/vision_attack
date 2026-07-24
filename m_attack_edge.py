@@ -56,7 +56,7 @@ def main():
     ap.add_argument("--steps", type=int, default=300)
     ap.add_argument("--crop-scale", type=float, nargs=2, default=[0.5, 1.0])
     ap.add_argument("--seeds", type=int, default=5)
-    ap.add_argument("--arms", default="pad0,pad0.15,edge_v1,edge_v2")
+    ap.add_argument("--arms", default="pad0.15,edge_v1")
     ap.add_argument("--edge-sigma", type=float, default=0.06)
     ap.add_argument("--edge-maxr", type=float, default=3.0)
     ap.add_argument("--lam-edge", type=float, default=1.0)

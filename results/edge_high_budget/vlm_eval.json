@@ -1,0 +1,400 @@
+{
+  "llava-hf/llava-1.5-7b-hf": {
+    "plane__baseline.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "A United Airlines plane is parked on a wet runway.",
+      "detected": true
+    },
+    "plane__edge_v1_seed0.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane__edge_v1_seed1.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane__edge_v1_seed2.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane__edge_v1_seed3.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane__edge_v1_seed4.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane__pad0.15_seed0.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane__pad0.15_seed1.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway at an airport.",
+      "detected": true
+    },
+    "plane__pad0.15_seed2.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane__pad0.15_seed3.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane__pad0.15_seed4.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane_no_text__baseline.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "A group of airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane_no_text__edge_v1_seed0.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane_no_text__edge_v1_seed1.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane_no_text__edge_v1_seed2.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane_no_text__edge_v1_seed3.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane_no_text__edge_v1_seed4.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane_no_text__pad0.15_seed0.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane_no_text__pad0.15_seed1.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane_no_text__pad0.15_seed2.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane_no_text__pad0.15_seed3.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "plane_no_text__pad0.15_seed4.png": {
+      "object": "plane",
+      "binary": "There are two airplanes visible in the image. The colors of the plane are blue and white.",
+      "describe": "Two airplanes are parked on a wet runway.",
+      "detected": true
+    },
+    "school_zone_sign__baseline.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a speed limit sign in the image. It says \"School Speed Limit 20.\"",
+      "describe": "A yellow school bus is driving down a street with a speed limit sign in front of it.",
+      "detected": true
+    },
+    "school_zone_sign__edge_v1_seed0.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a traffic sign in the image. It says \"Beware of Children.\"",
+      "describe": "A yellow school bus is driving down a street with a stop sign in the background.",
+      "detected": true
+    },
+    "school_zone_sign__edge_v1_seed1.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a traffic sign in the image. It says \"STOP\" in red letters.",
+      "describe": "A yellow school bus is driving down a street with a stop sign in the background.",
+      "detected": true
+    },
+    "school_zone_sign__edge_v1_seed2.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a traffic sign in the image. It says \"No left turn.\"",
+      "describe": "A yellow school bus is driving down a street with a stop sign and a speed limit sign.",
+      "detected": true
+    },
+    "school_zone_sign__edge_v1_seed3.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a traffic sign in the image. It says \"Slow down, children crossing.\"",
+      "describe": "A yellow school bus is driving down a street with a stop sign in the background.",
+      "detected": true
+    },
+    "school_zone_sign__edge_v1_seed4.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a traffic sign in the image. It says \"APP FEE LITTLE TI\" and is located near a street corner.",
+      "describe": "A yellow school bus is driving down a street with a speed limit sign on the side of the road.",
+      "detected": true
+    },
+    "school_zone_sign__pad0.15_seed0.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a traffic sign in the image. It says \"No Left Turns.\"",
+      "describe": "A yellow school bus is driving down a street with a stop sign in the background.",
+      "detected": true
+    },
+    "school_zone_sign__pad0.15_seed1.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a traffic sign in the image. It says \"Black Forest Road.\"",
+      "describe": "A yellow school bus is driving down a street with a stop sign in the background.",
+      "detected": true
+    },
+    "school_zone_sign__pad0.15_seed2.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a traffic sign in the image. It says \"be prepared to stop.\"",
+      "describe": "A yellow school bus is driving down a street with a sign that says \"be prepared to stop\".",
+      "detected": true
+    },
+    "school_zone_sign__pad0.15_seed3.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a traffic sign in the image. It says \"Slow down, children crossing.\"",
+      "describe": "A yellow school bus is driving down a street with a sign on a pole.",
+      "detected": true
+    },
+    "school_zone_sign__pad0.15_seed4.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a traffic sign in the image. It says \"Street Light Ahead.\"",
+      "describe": "A yellow school bus is driving down a street with a stop sign in front of it.",
+      "detected": true
+    },
+    "school_zone_sign_no_text__baseline.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a traffic sign in the image. It says \"No Parking.\"",
+      "describe": "A yellow school bus is driving down a street with a sign on a pole.",
+      "detected": true
+    },
+    "school_zone_sign_no_text__edge_v1_seed0.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a traffic sign in the image. It says \"Yield to Traffic.\"",
+      "describe": "A yellow school bus is driving down a street with a stop sign in the background.",
+      "detected": true
+    },
+    "school_zone_sign_no_text__edge_v1_seed1.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a traffic sign in the image. It says \"Yield to Traffic.\"",
+      "describe": "A yellow school bus is driving down a street with a stop sign in the background.",
+      "detected": true
+    },
+    "school_zone_sign_no_text__edge_v1_seed2.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a traffic sign in the image. It says \"Yield to Traffic.\"",
+      "describe": "A yellow school bus is driving down a street with a sign on a pole.",
+      "detected": true
+    },
+    "school_zone_sign_no_text__edge_v1_seed3.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a traffic sign in the image. It says \"Yield to Traffic.\"",
+      "describe": "A yellow school bus is driving down a street with a stop sign in the background.",
+      "detected": true
+    },
+    "school_zone_sign_no_text__edge_v1_seed4.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a traffic sign in the image. It says \"Yield to Traffic.\"",
+      "describe": "A yellow school bus is driving down a street with a stop sign in the background.",
+      "detected": true
+    },
+    "school_zone_sign_no_text__pad0.15_seed0.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a traffic sign in the image. It says \"Yield to Traffic.\"",
+      "describe": "A yellow school bus is driving down a street with a stop sign in the background.",
+      "detected": true
+    },
+    "school_zone_sign_no_text__pad0.15_seed1.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a traffic sign in the image. It says \"Yield to Traffic.\"",
+      "describe": "A yellow school bus is driving down a street with a stop sign in the background.",
+      "detected": true
+    },
+    "school_zone_sign_no_text__pad0.15_seed2.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a traffic sign in the image. It says \"Yield to Traffic.\"",
+      "describe": "A yellow school bus is driving down a street with a stop sign in the background.",
+      "detected": true
+    },
+    "school_zone_sign_no_text__pad0.15_seed3.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a traffic sign in the image. It says \"Yield to Traffic.\"",
+      "describe": "A yellow school bus is driving down a street with a stop sign in the background.",
+      "detected": true
+    },
+    "school_zone_sign_no_text__pad0.15_seed4.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a traffic sign in the image. It says \"Yield to Traffic.\"",
+      "describe": "A yellow school bus is driving down a street with a stop sign in the background.",
+      "detected": true
+    },
+    "stop_sign__baseline.png": {
+      "object": "stop sign",
+      "binary": "The image features a red stop sign prominently displayed on a street corner. The stop sign is positioned near a pole, and there is a street sign above it. The scene also includes a house in the background, adding to the residential atmosphere of the area.\n\nIn addition to the stop sign,",
+      "describe": "A stop sign is on a pole in front of a house.",
+      "detected": true
+    },
+    "stop_sign__edge_v1_seed0.png": {
+      "object": "stop sign",
+      "binary": "The image features a residential street with a stop sign prominently displayed on a pole. The stop sign is positioned near the center of the scene. The street is lined with houses, and there are several trees along the sidewalk.\n\nIn addition to the stop sign, there are two traffic lights",
+      "describe": "A stop sign is on a pole in front of a house.",
+      "detected": true
+    },
+    "stop_sign__edge_v1_seed1.png": {
+      "object": "stop sign",
+      "binary": "The image features a residential street with a stop sign prominently displayed on a pole. The stop sign is positioned near the center of the scene. The street is lined with houses, and there are a few cars parked along the road.\n\nIn addition to the stop sign, there are two",
+      "describe": "A stop sign is on a pole in front of a house.",
+      "detected": true
+    },
+    "stop_sign__edge_v1_seed2.png": {
+      "object": "stop sign",
+      "binary": "The image features a street corner with a stop sign prominently displayed. The stop sign is positioned on a metal pole, and there is a street sign above it. The scene also includes a house with a porch, a tree, and a car parked nearby.\n\nIn addition to the stop sign",
+      "describe": "A stop sign is on a pole in front of a house.",
+      "detected": true
+    },
+    "stop_sign__edge_v1_seed3.png": {
+      "object": "stop sign",
+      "binary": "The image features a stop sign on a metal pole, located on a street corner. The stop sign is positioned near a house, and there is a street sign above it. The scene also includes a few trees, one of which is situated close to the stop sign.\n\nIn addition to the stop sign,",
+      "describe": "A stop sign is on a pole in front of a house.",
+      "detected": true
+    },
+    "stop_sign__edge_v1_seed4.png": {
+      "object": "stop sign",
+      "binary": "The image depicts a residential street with a stop sign prominently displayed on a pole. The stop sign is positioned near the center of the scene. The street is lined with houses on both sides, creating a peaceful and suburban atmosphere.\n\nThere are several cars parked along the",
+      "describe": "A street sign is attached to a telephone pole.",
+      "detected": false
+    },
+    "stop_sign__pad0.15_seed0.png": {
+      "object": "stop sign",
+      "binary": "The image features a street scene with a stop sign prominently displayed on a pole. The stop sign is positioned near the center of the scene, and it is surrounded by a few trees. The street appears to be a residential area, with a house visible in the background.\n\nThere are also a",
+      "describe": "A stop sign is on a pole in front of a house.",
+      "detected": true
+    },
+    "stop_sign__pad0.15_seed1.png": {
+      "object": "stop sign",
+      "binary": "The image features a stop sign on a pole, located at the corner of a street. The stop sign is positioned above a street sign, which is also attached to the same pole. The scene is set in a residential area, with a house visible in the background.\n\nThere are two people in the",
+      "describe": "A stop sign is on a pole in front of a house.",
+      "detected": true
+    },
+    "stop_sign__pad0.15_seed2.png": {
+      "object": "stop sign",
+      "binary": "The image depicts a residential street with a stop sign prominently displayed on a pole. The stop sign is positioned near the center of the scene, and it is surrounded by a few trees. The street appears to be a quiet, residential area with a few houses visible in the background.",
+      "describe": "A street sign is on a pole in front of a house.",
+      "detected": false
+    },
+    "stop_sign__pad0.15_seed3.png": {
+      "object": "stop sign",
+      "binary": "The image features a street corner with a stop sign prominently displayed on a pole. The stop sign is positioned near a street sign, which is also visible in the scene. The street appears to be a residential area, as there are several houses in the background.\n\nIn addition to the stop sign",
+      "describe": "A stop sign is on a pole in front of a house.",
+      "detected": true
+    },
+    "stop_sign__pad0.15_seed4.png": {
+      "object": "stop sign",
+      "binary": "The image depicts a residential street with a stop sign prominently displayed on a pole. The stop sign is positioned near the center of the scene. The street is lined with houses on both sides, creating a peaceful and suburban atmosphere.\n\nThere are a few cars parked along",
+      "describe": "A stop sign is on a pole in front of a house.",
+      "detected": true
+    },
+    "stop_sign_no_text__baseline.png": {
+      "object": "stop sign",
+      "binary": "The image features a red stop sign on a metal pole, located on a street corner. The stop sign is positioned near a house, and there is a street sign above it. The scene also includes a few trees in the background, adding to the overall atmosphere of the neighborhood.",
+      "describe": "A red stop sign is attached to a wooden pole on a street corner.",
+      "detected": true
+    },
+    "stop_sign_no_text__edge_v1_seed0.png": {
+      "object": "stop sign",
+      "binary": "The image features a street corner with a red stop sign prominently displayed on a pole. The stop sign is positioned near the center of the scene. The street is lined with trees, creating a pleasant atmosphere.\n\nIn the background, there is a house with a porch, adding to the resident",
+      "describe": "A street sign is attached to a telephone pole.",
+      "detected": false
+    },
+    "stop_sign_no_text__edge_v1_seed1.png": {
+      "object": "stop sign",
+      "binary": "The image features a street corner with a red stop sign prominently displayed on a pole. The stop sign is positioned near a street sign, which is also visible in the scene. The street appears to be a residential area, as there are several houses in the background.\n\nIn addition to the stop",
+      "describe": "A street sign is attached to a telephone pole.",
+      "detected": false
+    },
+    "stop_sign_no_text__edge_v1_seed2.png": {
+      "object": "stop sign",
+      "binary": "The image features a street corner with a street sign on a pole. The street sign is positioned above a crosswalk, indicating the presence of a crosswalk at the intersection. The scene also includes a house with a porch, a tree, and a car parked nearby. The street appears to be a resident",
+      "describe": "A street sign is attached to a telephone pole.",
+      "detected": false
+    },
+    "stop_sign_no_text__edge_v1_seed3.png": {
+      "object": "stop sign",
+      "binary": "The image features a street corner with a red stop sign prominently displayed on a pole. The stop sign is positioned near the center of the scene. The street is lined with trees, creating a pleasant atmosphere.\n\nIn the background, there is a house with a porch, and a car is",
+      "describe": "A street sign is attached to a telephone pole.",
+      "detected": false
+    },
+    "stop_sign_no_text__edge_v1_seed4.png": {
+      "object": "stop sign",
+      "binary": "The image features a street corner with a stop sign and a street sign on a pole. The stop sign is positioned on the right side of the pole, while the street sign is on the left side. The street sign is also visible on the pole.\n\nIn the background, there is a house with a",
+      "describe": "A street sign is attached to a telephone pole.",
+      "detected": false
+    },
+    "stop_sign_no_text__pad0.15_seed0.png": {
+      "object": "stop sign",
+      "binary": "The image features a street corner with a red stop sign prominently displayed on a pole. The stop sign is positioned near a street sign, which is also visible in the scene. The street corner is located in front of a house, and there are trees in the background.\n\nIn addition to the stop",
+      "describe": "A street sign is attached to a telephone pole.",
+      "detected": false
+    },
+    "stop_sign_no_text__pad0.15_seed1.png": {
+      "object": "stop sign",
+      "binary": "The image features a street corner with a stop sign and a street sign on a pole. The stop sign is positioned on the left side of the pole, while the street sign is on the right side. The street sign is also visible on the pole.\n\nIn the background, there is a house with a",
+      "describe": "A street sign is attached to a telephone pole.",
+      "detected": false
+    },
+    "stop_sign_no_text__pad0.15_seed2.png": {
+      "object": "stop sign",
+      "binary": "The image features a street corner with a stop sign and a street sign on a pole. The stop sign is positioned on the right side of the pole, while the street sign is on the left side. The street sign is also a one-way sign, indicating the direction of traffic flow.\n\nIn the",
+      "describe": "A street sign is attached to a telephone pole.",
+      "detected": false
+    },
+    "stop_sign_no_text__pad0.15_seed3.png": {
+      "object": "stop sign",
+      "binary": "The image features a street corner with a stop sign and a street sign on a pole. The stop sign is positioned on the right side of the pole, while the street sign is on the left side. The street sign is also visible on the pole.\n\nIn the background, there is a house with a",
+      "describe": "A street sign is attached to a telephone pole.",
+      "detected": false
+    },
+    "stop_sign_no_text__pad0.15_seed4.png": {
+      "object": "stop sign",
+      "binary": "The image features a street corner with a street sign on a pole. The street sign is positioned above a manhole cover, which is located on the sidewalk. The scene also includes a house with a porch, a tree, and a car parked nearby. The street appears to be a residential area",
+      "describe": "A street sign is attached to a telephone pole.",
+      "detected": false
+    }
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "llava-hf/llava-1.5-7b-hf": {
+    "airplane__eps16.png": {
+      "object": "airplane",
+      "binary": "There are three airplanes visible in the image. The biggest airplane is facing the camera, and the other two airplanes are parked behind it.",
+      "describe": "A large white airplane is parked on the runway.",
+      "detected": true
+    },
+    "airplane__eps32.png": {
+      "object": "airplane",
+      "binary": "There are several airplanes visible in the image, with the biggest airplane facing the camera.",
+      "describe": "A large white airplane is parked on the tarmac.",
+      "detected": true
+    },
+    "airplane__eps8.png": {
+      "object": "airplane",
+      "binary": "There are four airplanes visible in the image. The biggest airplane is facing the camera, and it is parked in front of a large building.",
+      "describe": "A large white airplane is parked on the tarmac.",
+      "detected": true
+    },
+    "car__eps16.png": {
+      "object": "car",
+      "binary": "The color of the vehicle to the right of the man on the bike is white. It is a white SUV.",
+      "describe": "A man riding a bicycle is crossing the street in front of a white car.",
+      "detected": true
+    },
+    "car__eps32.png": {
+      "object": "car",
+      "binary": "The color of the vehicle to the right of the man on the bike is white. It is a white SUV.",
+      "describe": "A man riding a bicycle in front of a white car.",
+      "detected": true
+    },
+    "car__eps8.png": {
+      "object": "car",
+      "binary": "The color of the vehicle to the right of the man on the bike is white. It is a white SUV.",
+      "describe": "A man riding a bike is crossing the street in front of a white SUV.",
+      "detected": false
+    },
+    "cat__eps16.png": {
+      "object": "cat",
+      "binary": "Yes, there is a cat in the image.",
+      "describe": "A cat is sitting on a window sill in front of a bookshelf.",
+      "detected": true
+    },
+    "cat__eps32.png": {
+      "object": "cat",
+      "binary": "Yes, there is a cat in the image.",
+      "describe": "A cat is sitting on a bookshelf in front of a window.",
+      "detected": true
+    },
+    "cat__eps8.png": {
+      "object": "cat",
+      "binary": "Yes, there is a cat in this image.",
+      "describe": "A cat is sitting on a bookshelf in front of a window.",
+      "detected": true
+    },
+    "dog__eps16.png": {
+      "object": "dog",
+      "binary": "Yes, there is a dog in the image. It is a corgi dog sitting on a couch.",
+      "describe": "A corgi dog is sitting on a couch.",
+      "detected": true
+    },
+    "dog__eps32.png": {
+      "object": "dog",
+      "binary": "Yes, there is a dog in the image. It is a cute, small dog sitting on a couch.",
+      "describe": "A corgi dog is sitting on a couch.",
+      "detected": true
+    },
+    "dog__eps8.png": {
+      "object": "dog",
+      "binary": "Yes, there is a dog in the image. It is a cute, small dog sitting on a couch.",
+      "describe": "A cute dog is sitting on a couch and smiling.",
+      "detected": true
+    },
+    "school_zone_sign__eps16.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a traffic sign in the image. It says \"School Speed Limit 20.\"",
+      "describe": "A yellow school bus is driving down a street with a speed limit sign in the background.",
+      "detected": true
+    },
+    "school_zone_sign__eps32.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a traffic sign in the image. It says \"Speed Limit 20.\"",
+      "describe": "A yellow school bus is driving down a street with a speed limit sign in the background.",
+      "detected": true
+    },
+    "school_zone_sign__eps8.png": {
+      "object": "speed sign",
+      "binary": "Yes, there is a speed limit sign in the image. It says \"School Speed Limit 20.\"",
+      "describe": "A yellow school bus is parked in front of a speed limit sign.",
+      "detected": true
+    }
+  }
+}

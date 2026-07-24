@@ -1,0 +1,141 @@
+id,object,arm,seed,filename,cos_to_target,global_p_obj,roi_p_obj,grad_align
+plane,plane,pad0,0,plane__pad0_seed0.png,0.9955,0.9187,0.2827,nan
+plane,plane,pad0,1,plane__pad0_seed1.png,0.9954,0.9217,0.3439,nan
+plane,plane,pad0,2,plane__pad0_seed2.png,0.9938,0.9256,0.3603,nan
+plane,plane,pad0,3,plane__pad0_seed3.png,0.9949,0.9223,0.2740,nan
+plane,plane,pad0,4,plane__pad0_seed4.png,0.9932,0.9203,0.3469,nan
+plane,plane,pad0.15,0,plane__pad0.15_seed0.png,0.9920,0.9228,0.2463,nan
+plane,plane,pad0.15,1,plane__pad0.15_seed1.png,0.9899,0.9139,0.2546,nan
+plane,plane,pad0.15,2,plane__pad0.15_seed2.png,0.9937,0.9222,0.2321,nan
+plane,plane,pad0.15,3,plane__pad0.15_seed3.png,0.9925,0.9308,0.2695,nan
+plane,plane,pad0.15,4,plane__pad0.15_seed4.png,0.9882,0.9214,0.2911,nan
+plane,plane,edge_v1,0,plane__edge_v1_seed0.png,0.9953,0.9271,0.2716,nan
+plane,plane,edge_v1,1,plane__edge_v1_seed1.png,0.9961,0.9295,0.2514,nan
+plane,plane,edge_v1,2,plane__edge_v1_seed2.png,0.9962,0.9269,0.3505,nan
+plane,plane,edge_v1,3,plane__edge_v1_seed3.png,0.9961,0.9335,0.2366,nan
+plane,plane,edge_v1,4,plane__edge_v1_seed4.png,0.9947,0.9293,0.2867,nan
+plane,plane,edge_v2,0,plane__edge_v2_seed0.png,0.9956,0.9218,0.2738,0.0126
+plane,plane,edge_v2,1,plane__edge_v2_seed1.png,0.9949,0.9132,0.2495,0.0115
+plane,plane,edge_v2,2,plane__edge_v2_seed2.png,0.9954,0.9236,0.3276,0.0113
+plane,plane,edge_v2,3,plane__edge_v2_seed3.png,0.9958,0.9233,0.2584,0.0115
+plane,plane,edge_v2,4,plane__edge_v2_seed4.png,0.9917,0.9143,0.3310,0.0146
+plane_no_text,plane,pad0,0,plane_no_text__pad0_seed0.png,0.9974,0.9225,0.3268,nan
+plane_no_text,plane,pad0,1,plane_no_text__pad0_seed1.png,0.9973,0.9238,0.4181,nan
+plane_no_text,plane,pad0,2,plane_no_text__pad0_seed2.png,0.9963,0.9272,0.3601,nan
+plane_no_text,plane,pad0,3,plane_no_text__pad0_seed3.png,0.9973,0.9243,0.3069,nan
+plane_no_text,plane,pad0,4,plane_no_text__pad0_seed4.png,0.9953,0.9246,0.3372,nan
+plane_no_text,plane,pad0.15,0,plane_no_text__pad0.15_seed0.png,0.9934,0.9265,0.4012,nan
+plane_no_text,plane,pad0.15,1,plane_no_text__pad0.15_seed1.png,0.9943,0.9317,0.4651,nan
+plane_no_text,plane,pad0.15,2,plane_no_text__pad0.15_seed2.png,0.9948,0.9244,0.4426,nan
+plane_no_text,plane,pad0.15,3,plane_no_text__pad0.15_seed3.png,0.9944,0.9162,0.3949,nan
+plane_no_text,plane,pad0.15,4,plane_no_text__pad0.15_seed4.png,0.9887,0.9273,0.5242,nan
+plane_no_text,plane,edge_v1,0,plane_no_text__edge_v1_seed0.png,0.9964,0.9288,0.2924,nan
+plane_no_text,plane,edge_v1,1,plane_no_text__edge_v1_seed1.png,0.9962,0.9350,0.3636,nan
+plane_no_text,plane,edge_v1,2,plane_no_text__edge_v1_seed2.png,0.9969,0.9336,0.4613,nan
+plane_no_text,plane,edge_v1,3,plane_no_text__edge_v1_seed3.png,0.9970,0.9259,0.3279,nan
+plane_no_text,plane,edge_v1,4,plane_no_text__edge_v1_seed4.png,0.9952,0.9368,0.3592,nan
+plane_no_text,plane,edge_v2,0,plane_no_text__edge_v2_seed0.png,0.9976,0.9242,0.3464,0.0121
+plane_no_text,plane,edge_v2,1,plane_no_text__edge_v2_seed1.png,0.9969,0.9211,0.3071,0.0115
+plane_no_text,plane,edge_v2,2,plane_no_text__edge_v2_seed2.png,0.9971,0.9266,0.3525,0.0107
+plane_no_text,plane,edge_v2,3,plane_no_text__edge_v2_seed3.png,0.9979,0.9194,0.2608,0.0115
+plane_no_text,plane,edge_v2,4,plane_no_text__edge_v2_seed4.png,0.9969,0.9306,0.3168,0.0126
+school_zone_sign,speed sign,pad0,0,school_zone_sign__pad0_seed0.png,0.9401,0.9994,0.3119,nan
+school_zone_sign,speed sign,pad0,1,school_zone_sign__pad0_seed1.png,0.9393,0.9992,0.3141,nan
+school_zone_sign,speed sign,pad0,2,school_zone_sign__pad0_seed2.png,0.9410,0.9997,0.2844,nan
+school_zone_sign,speed sign,pad0,3,school_zone_sign__pad0_seed3.png,0.9410,0.9993,0.2195,nan
+school_zone_sign,speed sign,pad0,4,school_zone_sign__pad0_seed4.png,0.9413,0.9993,0.2922,nan
+school_zone_sign,speed sign,pad0.15,0,school_zone_sign__pad0.15_seed0.png,0.9506,0.9986,0.2635,nan
+school_zone_sign,speed sign,pad0.15,1,school_zone_sign__pad0.15_seed1.png,0.9553,0.9983,0.2553,nan
+school_zone_sign,speed sign,pad0.15,2,school_zone_sign__pad0.15_seed2.png,0.9527,0.9981,0.3206,nan
+school_zone_sign,speed sign,pad0.15,3,school_zone_sign__pad0.15_seed3.png,0.9558,0.9982,0.2984,nan
+school_zone_sign,speed sign,pad0.15,4,school_zone_sign__pad0.15_seed4.png,0.9542,0.9982,0.3653,nan
+school_zone_sign,speed sign,edge_v1,0,school_zone_sign__edge_v1_seed0.png,0.9669,0.9917,0.3230,nan
+school_zone_sign,speed sign,edge_v1,1,school_zone_sign__edge_v1_seed1.png,0.9677,0.9937,0.2394,nan
+school_zone_sign,speed sign,edge_v1,2,school_zone_sign__edge_v1_seed2.png,0.9617,0.9960,0.2495,nan
+school_zone_sign,speed sign,edge_v1,3,school_zone_sign__edge_v1_seed3.png,0.9696,0.9936,0.2824,nan
+school_zone_sign,speed sign,edge_v1,4,school_zone_sign__edge_v1_seed4.png,0.9624,0.9950,0.3167,nan
+school_zone_sign,speed sign,edge_v2,0,school_zone_sign__edge_v2_seed0.png,0.9465,0.9993,0.2654,0.0035
+school_zone_sign,speed sign,edge_v2,1,school_zone_sign__edge_v2_seed1.png,0.9402,0.9995,0.2220,0.0041
+school_zone_sign,speed sign,edge_v2,2,school_zone_sign__edge_v2_seed2.png,0.9449,0.9989,0.2574,-0.0008
+school_zone_sign,speed sign,edge_v2,3,school_zone_sign__edge_v2_seed3.png,0.9406,0.9993,0.1995,0.0008
+school_zone_sign,speed sign,edge_v2,4,school_zone_sign__edge_v2_seed4.png,0.9434,0.9995,0.2383,-0.0014
+school_zone_sign_no_text,speed sign,pad0,0,school_zone_sign_no_text__pad0_seed0.png,0.9682,0.9946,0.1855,nan
+school_zone_sign_no_text,speed sign,pad0,1,school_zone_sign_no_text__pad0_seed1.png,0.9692,0.9929,0.2070,nan
+school_zone_sign_no_text,speed sign,pad0,2,school_zone_sign_no_text__pad0_seed2.png,0.9704,0.9910,0.2240,nan
+school_zone_sign_no_text,speed sign,pad0,3,school_zone_sign_no_text__pad0_seed3.png,0.9707,0.9862,0.1834,nan
+school_zone_sign_no_text,speed sign,pad0,4,school_zone_sign_no_text__pad0_seed4.png,0.9694,0.9904,0.2418,nan
+school_zone_sign_no_text,speed sign,pad0.15,0,school_zone_sign_no_text__pad0.15_seed0.png,0.9679,0.9912,0.1540,nan
+school_zone_sign_no_text,speed sign,pad0.15,1,school_zone_sign_no_text__pad0.15_seed1.png,0.9566,0.9942,0.1442,nan
+school_zone_sign_no_text,speed sign,pad0.15,2,school_zone_sign_no_text__pad0.15_seed2.png,0.9614,0.9907,0.1076,nan
+school_zone_sign_no_text,speed sign,pad0.15,3,school_zone_sign_no_text__pad0.15_seed3.png,0.9685,0.9832,0.1518,nan
+school_zone_sign_no_text,speed sign,pad0.15,4,school_zone_sign_no_text__pad0.15_seed4.png,0.9625,0.9776,0.0947,nan
+school_zone_sign_no_text,speed sign,edge_v1,0,school_zone_sign_no_text__edge_v1_seed0.png,0.9733,0.9786,0.1320,nan
+school_zone_sign_no_text,speed sign,edge_v1,1,school_zone_sign_no_text__edge_v1_seed1.png,0.9672,0.9817,0.0930,nan
+school_zone_sign_no_text,speed sign,edge_v1,2,school_zone_sign_no_text__edge_v1_seed2.png,0.9706,0.9784,0.1241,nan
+school_zone_sign_no_text,speed sign,edge_v1,3,school_zone_sign_no_text__edge_v1_seed3.png,0.9804,0.9474,0.1460,nan
+school_zone_sign_no_text,speed sign,edge_v1,4,school_zone_sign_no_text__edge_v1_seed4.png,0.9705,0.9743,0.1143,nan
+school_zone_sign_no_text,speed sign,edge_v2,0,school_zone_sign_no_text__edge_v2_seed0.png,0.9729,0.9867,0.1662,0.0076
+school_zone_sign_no_text,speed sign,edge_v2,1,school_zone_sign_no_text__edge_v2_seed1.png,0.9656,0.9929,0.1769,0.0116
+school_zone_sign_no_text,speed sign,edge_v2,2,school_zone_sign_no_text__edge_v2_seed2.png,0.9678,0.9929,0.1673,0.0107
+school_zone_sign_no_text,speed sign,edge_v2,3,school_zone_sign_no_text__edge_v2_seed3.png,0.9674,0.9899,0.1479,0.0086
+school_zone_sign_no_text,speed sign,edge_v2,4,school_zone_sign_no_text__edge_v2_seed4.png,0.9742,0.9874,0.2089,0.0119
+stop_sign,stop sign,pad0,0,stop_sign__pad0_seed0.png,0.7526,0.9999,0.0054,nan
+stop_sign,stop sign,pad0,1,stop_sign__pad0_seed1.png,0.7379,0.9999,0.0021,nan
+stop_sign,stop sign,pad0,2,stop_sign__pad0_seed2.png,0.7552,0.9999,0.0028,nan
+stop_sign,stop sign,pad0,3,stop_sign__pad0_seed3.png,0.7356,0.9999,0.0035,nan
+stop_sign,stop sign,pad0,4,stop_sign__pad0_seed4.png,0.7638,0.9999,0.0216,nan
+stop_sign,stop sign,pad0.15,0,stop_sign__pad0.15_seed0.png,0.8569,0.9989,0.0596,nan
+stop_sign,stop sign,pad0.15,1,stop_sign__pad0.15_seed1.png,0.8512,0.9995,0.0021,nan
+stop_sign,stop sign,pad0.15,2,stop_sign__pad0.15_seed2.png,0.8808,0.9994,0.0430,nan
+stop_sign,stop sign,pad0.15,3,stop_sign__pad0.15_seed3.png,0.8872,0.9993,0.0260,nan
+stop_sign,stop sign,pad0.15,4,stop_sign__pad0.15_seed4.png,0.8523,0.9981,0.0071,nan
+stop_sign,stop sign,edge_v1,0,stop_sign__edge_v1_seed0.png,0.8665,0.9997,0.0211,nan
+stop_sign,stop sign,edge_v1,1,stop_sign__edge_v1_seed1.png,0.8904,0.9996,0.0239,nan
+stop_sign,stop sign,edge_v1,2,stop_sign__edge_v1_seed2.png,0.8820,0.9996,0.0351,nan
+stop_sign,stop sign,edge_v1,3,stop_sign__edge_v1_seed3.png,0.8722,0.9996,0.0232,nan
+stop_sign,stop sign,edge_v1,4,stop_sign__edge_v1_seed4.png,0.8930,0.9997,0.0151,nan
+stop_sign,stop sign,edge_v2,0,stop_sign__edge_v2_seed0.png,0.7510,0.9999,0.0048,-0.0004
+stop_sign,stop sign,edge_v2,1,stop_sign__edge_v2_seed1.png,0.7292,0.9999,0.0099,0.0010
+stop_sign,stop sign,edge_v2,2,stop_sign__edge_v2_seed2.png,0.7486,0.9999,0.0039,0.0063
+stop_sign,stop sign,edge_v2,3,stop_sign__edge_v2_seed3.png,0.7484,0.9998,0.0025,0.0036
+stop_sign,stop sign,edge_v2,4,stop_sign__edge_v2_seed4.png,0.7515,0.9999,0.0026,0.0075
+stop_sign,stop sign,pad0,0,stop_sign__pad0_seed0.png,0.9690,0.9999,0.6892,nan
+stop_sign,stop sign,pad0,1,stop_sign__pad0_seed1.png,0.9679,0.9999,0.6383,nan
+stop_sign,stop sign,pad0,2,stop_sign__pad0_seed2.png,0.9688,0.9998,0.7254,nan
+stop_sign,stop sign,pad0,3,stop_sign__pad0_seed3.png,0.9682,0.9999,0.7019,nan
+stop_sign,stop sign,pad0,4,stop_sign__pad0_seed4.png,0.9652,0.9999,0.6211,nan
+stop_sign,stop sign,pad0.15,0,stop_sign__pad0.15_seed0.png,0.9628,0.9995,0.8312,nan
+stop_sign,stop sign,pad0.15,1,stop_sign__pad0.15_seed1.png,0.9649,0.9997,0.9111,nan
+stop_sign,stop sign,pad0.15,2,stop_sign__pad0.15_seed2.png,0.9640,0.9997,0.9045,nan
+stop_sign,stop sign,pad0.15,3,stop_sign__pad0.15_seed3.png,0.9600,0.9994,0.9598,nan
+stop_sign,stop sign,pad0.15,4,stop_sign__pad0.15_seed4.png,0.9696,0.9997,0.8886,nan
+stop_sign,stop sign,edge_v1,0,stop_sign__edge_v1_seed0.png,0.9696,0.9991,0.9009,nan
+stop_sign,stop sign,edge_v1,1,stop_sign__edge_v1_seed1.png,0.9727,0.9997,0.8648,nan
+stop_sign,stop sign,edge_v1,2,stop_sign__edge_v1_seed2.png,0.9709,0.9995,0.7822,nan
+stop_sign,stop sign,edge_v1,3,stop_sign__edge_v1_seed3.png,0.9681,0.9994,0.8865,nan
+stop_sign,stop sign,edge_v1,4,stop_sign__edge_v1_seed4.png,0.9760,0.9998,0.8331,nan
+stop_sign,stop sign,edge_v2,0,stop_sign__edge_v2_seed0.png,0.9678,0.9999,0.8272,0.0126
+stop_sign,stop sign,edge_v2,1,stop_sign__edge_v2_seed1.png,0.9653,0.9999,0.7196,0.0113
+stop_sign,stop sign,edge_v2,2,stop_sign__edge_v2_seed2.png,0.9698,0.9999,0.6986,0.0139
+stop_sign,stop sign,edge_v2,3,stop_sign__edge_v2_seed3.png,0.9662,0.9999,0.8270,0.0175
+stop_sign,stop sign,edge_v2,4,stop_sign__edge_v2_seed4.png,0.9633,0.9999,0.7048,0.0081
+stop_sign_no_text,stop sign,pad0,0,stop_sign_no_text__pad0_seed0.png,0.9781,0.9996,0.6496,nan
+stop_sign_no_text,stop sign,pad0,1,stop_sign_no_text__pad0_seed1.png,0.9815,0.9996,0.7304,nan
+stop_sign_no_text,stop sign,pad0,2,stop_sign_no_text__pad0_seed2.png,0.9824,0.9994,0.7462,nan
+stop_sign_no_text,stop sign,pad0,3,stop_sign_no_text__pad0_seed3.png,0.9797,0.9994,0.6212,nan
+stop_sign_no_text,stop sign,pad0,4,stop_sign_no_text__pad0_seed4.png,0.9776,0.9997,0.5554,nan
+stop_sign_no_text,stop sign,pad0.15,0,stop_sign_no_text__pad0.15_seed0.png,0.9706,0.9960,0.7131,nan
+stop_sign_no_text,stop sign,pad0.15,1,stop_sign_no_text__pad0.15_seed1.png,0.9643,0.9973,0.8321,nan
+stop_sign_no_text,stop sign,pad0.15,2,stop_sign_no_text__pad0.15_seed2.png,0.9757,0.9971,0.7248,nan
+stop_sign_no_text,stop sign,pad0.15,3,stop_sign_no_text__pad0.15_seed3.png,0.9753,0.9961,0.6545,nan
+stop_sign_no_text,stop sign,pad0.15,4,stop_sign_no_text__pad0.15_seed4.png,0.9709,0.9982,0.7177,nan
+stop_sign_no_text,stop sign,edge_v1,0,stop_sign_no_text__edge_v1_seed0.png,0.9752,0.9945,0.6451,nan
+stop_sign_no_text,stop sign,edge_v1,1,stop_sign_no_text__edge_v1_seed1.png,0.9798,0.9987,0.8474,nan
+stop_sign_no_text,stop sign,edge_v1,2,stop_sign_no_text__edge_v1_seed2.png,0.9769,0.9970,0.5894,nan
+stop_sign_no_text,stop sign,edge_v1,3,stop_sign_no_text__edge_v1_seed3.png,0.9753,0.9974,0.7569,nan
+stop_sign_no_text,stop sign,edge_v1,4,stop_sign_no_text__edge_v1_seed4.png,0.9818,0.9986,0.7068,nan
+stop_sign_no_text,stop sign,edge_v2,0,stop_sign_no_text__edge_v2_seed0.png,0.9797,0.9996,0.6732,0.0308
+stop_sign_no_text,stop sign,edge_v2,1,stop_sign_no_text__edge_v2_seed1.png,0.9804,0.9996,0.7764,0.0361
+stop_sign_no_text,stop sign,edge_v2,2,stop_sign_no_text__edge_v2_seed2.png,0.9815,0.9994,0.5594,0.0172
+stop_sign_no_text,stop sign,edge_v2,3,stop_sign_no_text__edge_v2_seed3.png,0.9769,0.9995,0.6540,0.0219
+stop_sign_no_text,stop sign,edge_v2,4,stop_sign_no_text__edge_v2_seed4.png,0.9743,0.9997,0.6344,0.0282
