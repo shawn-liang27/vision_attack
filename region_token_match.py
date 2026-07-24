@@ -78,7 +78,7 @@ def main():
     cfg = model.config
     VFL = getattr(cfg, "vision_feature_layer", -2)
     VFS = getattr(cfg, "vision_feature_select_strategy", "default")
-    vt = model.vision_tower
+    vt = getattr(model, "vision_tower", None) or model.model.vision_tower
     PATCH = vt.config.patch_size
     GRID = RES // PATCH
     print(f"HOOK: vision_feature_layer={VFL}  select_strategy={VFS}  patch={PATCH} grid={GRID} "
@@ -98,7 +98,7 @@ def main():
     # --- verify the hook matches what the projector actually consumes ---------
     with torch.no_grad():
         probe = torch.rand(1, 3, RES, RES, device=DEVICE, dtype=DTYPE)
-        mine = model.multi_modal_projector(penult(probe).unsqueeze(0))
+        mine = model.model.multi_modal_projector(penult(probe).unsqueeze(0))
         try:
             ref = model.get_image_features(pixel_values=((probe - MEAN) / STD),
                                            vision_feature_layer=VFL,

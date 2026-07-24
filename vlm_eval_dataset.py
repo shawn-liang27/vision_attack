@@ -41,10 +41,11 @@ def main():
     outdir = args.outdir or args.images_dir
 
     with open(args.dataset) as f:
+        dataset = {json.loads(l)["id"]: json.loads(l) for l in f if l.strip()}
         obj_of = {json.loads(l)["id"]: json.loads(l)["object"] for l in f if l.strip()}
     paths = sorted(glob.glob(os.path.join(args.images_dir, "*.png")))
-    if not paths:
-        raise SystemExit(f"no images in {args.images_dir}")
+    # if not paths:
+    #     raise SystemExit(f"no images in {args.images_dir}")
 
     def object_for(name):  # <id>__... ; id may itself contain no "__"
         sid = name.split("__")[0]
@@ -60,10 +61,11 @@ def main():
         for p in paths:
             name = os.path.basename(p)
             sid, obj = object_for(name)
+            obj, object_description = dataset[sid]["object"], dataset[sid]["object_description"]
             if obj is None:
                 print(f"  {name}: no object mapping, skipping"); continue
             img = Image.open(p).convert("RGB")
-            binary = ask(model, processor, img, f"Is there a {obj} in this image? Answer only 'yes' or 'no'.")
+            binary = ask(model, processor, img, f"{dataset[sid]["question"]}")
             desc = ask(model, processor, img, "Describe this image in one sentence.")
             detected = ("yes" in binary.lower()) or (obj.lower() in desc.lower())
             results[model_id][name] = {"object": obj, "binary": binary, "describe": desc, "detected": detected}

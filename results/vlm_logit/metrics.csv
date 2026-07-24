@@ -1,0 +1,16 @@
+id,object,budget,p_yes_before,p_yes_after,ans_before,ans_after,detected_after
+dog,dog,8,0.9890,0.0000,Yes,No,False
+dog,dog,16,0.9890,0.0000,Yes,No,False
+dog,dog,32,0.9890,0.0000,Yes,No,False
+cat,cat,8,0.9841,0.0032,Yes,No,False
+cat,cat,16,0.9841,0.0000,Yes,No,False
+cat,cat,32,0.9841,0.0000,Yes,No,False
+car,car,8,0.9148,0.0036,Yes,No,False
+car,car,16,0.9148,0.0000,Yes,No,False
+car,car,32,0.9148,0.0000,Yes,No,False
+airplane,airplane,8,0.9770,0.0000,Yes,No,False
+airplane,airplane,16,0.9770,0.0000,Yes,No,False
+airplane,airplane,32,0.9770,0.0000,Yes,No,False
+school_zone_sign,sign,8,0.9796,0.0041,Yes,No,False
+school_zone_sign,sign,16,0.9796,0.0000,Yes,No,False
+school_zone_sign,sign,32,0.9796,0.0000,Yes,No,False

@@ -20,7 +20,7 @@ def main():
     ap.add_argument("--image", default="original.png")
     ap.add_argument("--prompt", default="dog")
     ap.add_argument("--out", default="masks/dog_mask.png")
-    ap.add_argument("--threshold", type=float, default=0.5)
+    ap.add_argument("--threshold", type=float, default=0.7)
     args = ap.parse_args()
 
     image = Image.open(args.image).convert("RGB")
@@ -35,7 +35,7 @@ def main():
     results = processor.post_process_instance_segmentation(
         outputs,
         threshold=args.threshold,
-        mask_threshold=0.5,
+        mask_threshold=0.7,
         target_sizes=inputs.get("original_sizes").tolist(),
     )[0]
 
