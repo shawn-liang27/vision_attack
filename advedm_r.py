@@ -1,18 +1,20 @@
 """Stage 25 + 26: AdvEDM-R (patch-token nulling) with optional MULTI-LAYER DEEP
 FEATURE ERASURE (deep supervision), tested under STRICT source-absence.
 
-AdvEDM-R (Eqs 3-8): null the object-region patch tokens toward a zeroed image,
-suppress CLS-vs-object-text, and fixate attention to preserve the rest.
-  L_cls = CS(cls_adv, E_t(obj))                                        # push CLS off object-text (min)
-  L_p   = -mean_{i in obj} CS(patch_adv[-1][i], patch_zeroed[-1][i])   # null obj tokens at ENCODER OUTPUT
+AdvEDM-R (Eqs 3-8): steer the object-region patch tokens toward a REMOVAL TARGET,
+suppress CLS-vs-object-text, and fixate attention to preserve the rest. Target =
+the INPAINT image (object -> plausible background; --target inpaint, DEFAULT) -- the
+sound "object-absent" counterfactual -- or the zeroed black box (--target zeroed).
+  L_cls = CS(cls_adv, E_t(obj))                                      # push CLS off object-text (min)
+  L_p   = -mean_{i in obj} CS(patch_adv[-1][i], patch_tgt[-1][i])    # steer obj tokens -> target @ ENCODER OUTPUT
   L_fix = -mean_{j in bg}  A_clean[j] * CS(patch_adv[-1][j], patch_clean[-1][j])  # attn-weighted preserve
   L = w1 L_cls + w2 L_p + w3 L_fix     (w1=0.5, w2=2, w3=0.2), Adam lr=5e-3, 500 it, L2 ball.
 
-DEEP SUPERVISION (arm 'deep', --w-inter>0): ALSO null obj tokens at INTERMEDIATE
-layers l in --inter-layers (default L/3, 2L/3). In shallow layers patch tokens are
-still spatially local and less globally entangled, so erasing the object early is
-meant to cut its info flow before deeper layers can reconstruct it:
-  L_p_inter = mean_l [ -mean_{i in obj} CS(patch_adv[l][i], patch_zeroed[l][i]) ]
+DEEP SUPERVISION (arm 'deep', --w-inter>0): ALSO steer obj tokens at INTERMEDIATE
+layers l in --inter-layers. Truly-shallow layers (e.g. 2,4,6 of 24) keep patch tokens
+spatially local / least globally entangled -- the fairest test of whether erasing the
+object early cuts its info flow before deeper layers can reconstruct it:
+  L_p_inter = mean_l [ -mean_{i in obj} CS(patch_adv[l][i], patch_tgt[l][i]) ]
   L = ... + w_inter * L_p_inter
 Run --arms base,deep to A/B last-layer-only vs +intermediate under identical seeds.
 
@@ -20,14 +22,14 @@ CRITICAL LAYER NOTE: AdvEDM matches the CLIP ENCODER-OUTPUT tokens (hidden_state
 [-1]); LLaVA's decoder reads the PENULTIMATE (-2) tokens. We attack [-1] (+inter)
 and DIAGNOSE at [-2] (what the victim reads). The deep-supervision hypothesis is
 that erasing early forces [-2] object-free too; diagnostics test it directly
-(objpatch_cos_zero_inter = did inter nulling take; roiP@-2 = did it reach LLaVA's layer).
+(objpatch_cos_tgt_inter = did inter steering reach the target; roiP@-2 = did it reach LLaVA's layer).
 
 Region mask: (a) 'seg' = segmentation -> token grid; (b) 'sim' = top-20% patches by
 CS(patch, E_t(obj)). Eval: WEAK = object in "Describe this image."? vs STRICT =
 absent under ALL of {direct, list, presup, detail, read-text(sign)}. 5 seeds, LLaVA-1.5-7b.
 
     uv run python advedm_r.py --dataset dataset.jsonl --regions seg,sim \\
-        --budgets 20,40,80 --seeds 5 --arms base,deep --inter-layers 8,16
+        --budgets 20,40,80 --seeds 5 --arms base,deep --inter-layers 2,4,6 --target inpaint
 """
 
 import argparse
@@ -69,6 +71,8 @@ def main():
     ap.add_argument("--w2", type=float, default=2.0)
     ap.add_argument("--w3", type=float, default=0.2)
     ap.add_argument("--topk", type=float, default=0.20)
+    ap.add_argument("--target", default="inpaint", choices=["inpaint", "zeroed"],
+                    help="removal target for L_p/L_p_inter: 'inpaint'=object->background (sound), 'zeroed'=black box")
     ap.add_argument("--inter-layers", default="",
                     help="intermediate layers for deep supervision: ints (abs idx) or floats in (0,1) (depth frac); empty=L/3,2L/3")
     ap.add_argument("--w-inter", type=float, default=1.0, help="weight alpha on intermediate-layer nulling loss")
@@ -112,6 +116,7 @@ def main():
     arms = [a.strip() for a in args.arms.split(",") if a.strip()]
     print(f"deep-supervision layers (of {NL}): {inter_layers} "
           f"(depths {[round(l / NL, 2) for l in inter_layers]}); arms={arms} w_inter={args.w_inter}")
+    print(f"removal target = {args.target} ({'inpaint image, object->background' if args.target == 'inpaint' else 'zeroed black box'})")
 
     def txt_emb(words):
         tk = cproc(text=words, return_tensors="pt", padding=True).to(DEVICE)
@@ -151,8 +156,8 @@ def main():
     os.makedirs(args.outdir, exist_ok=True)
 
     ans_rows = [["arm", "object", "region", "eps", "seed", "criterion", "prompt", "answer_text", "object_present"]]
-    diag_rows = [["arm", "object", "region", "eps", "seed", "cls_cos_obj", "objpatch_cos_zero",
-                  "objpatch_cos_zero_inter", "roiP_penult_layer-2"]]
+    diag_rows = [["arm", "object", "region", "eps", "seed", "cls_cos_obj", "objpatch_cos_tgt",
+                  "objpatch_cos_tgt_inter", "roiP_penult_layer-2"]]
     curve_rows = [["arm", "object", "region", "eps", "seed", "iter", "L_cls", "L_p", "L_p_inter", "L_fix"]]
     printed_shapes = False
 
@@ -164,14 +169,19 @@ def main():
         E_t = txt_emb([f"a photo of a {obj}"])[0]
         label_txt = txt_emb([f"a photo of a {obj}"] + [f"a photo of {d}" for d in
                              ["background", "a wall", "a floor", "furniture", "the sky"]])
-        # zeroed image M: object-region pixels set to 0
-        mpix = torch.from_numpy((np.array(Image.open(s["mask"]).convert("L").resize((RES, RES), Image.NEAREST)) > 127)
-                                .astype(np.float32)).view(1, 1, RES, RES).to(DEVICE)
-        xM = x0 * (1 - mpix)
+        # removal reference R: inpaint image (object -> plausible background, sound counterfactual) or zeroed (black box)
+        if args.target == "inpaint" and s.get("target") and os.path.exists(s["target"]):
+            xR = load01(s["target"])
+        else:
+            if args.target == "inpaint":
+                print(f"[{sid}] no inpaint target file; falling back to zeroed black box")
+            mpix = torch.from_numpy((np.array(Image.open(s["mask"]).convert("L").resize((RES, RES), Image.NEAREST)) > 127)
+                                    .astype(np.float32)).view(1, 1, RES, RES).to(DEVICE)
+            xR = x0 * (1 - mpix)
         clean = vis(x0, want_attn=True)
-        featM = vis(xM)
-        # zeroed-image references at the intermediate layers (normalized, detached), for deep supervision
-        featM_inter = [F.normalize(featM["hs"][l][:, 1:].squeeze(0), dim=-1).detach() for l in inter_layers]
+        featR = vis(xR)
+        # removal-target references at the intermediate layers (normalized, detached), for deep supervision
+        featR_inter = [F.normalize(featR["hs"][l][:, 1:].squeeze(0), dim=-1).detach() for l in inter_layers]
         if not printed_shapes:
             print(f"SHAPES: patch_last={tuple(clean['last'].shape)} attn A(CLS->patch)={tuple(clean['attn'].shape)}")
             printed_shapes = True
@@ -198,7 +208,7 @@ def main():
             bg_idx = ~obj_idx
             if obj_idx.sum() == 0:
                 continue
-            featM_last = featM["last"].squeeze(0).detach()
+            featR_last = featR["last"].squeeze(0).detach()
             clean_last = clean["last"].squeeze(0).detach()
             print(f"\n=== {sid} '{obj}' region={region} ({int(obj_idx.sum())}/{GRID*GRID} obj tokens) ===")
 
@@ -215,13 +225,13 @@ def main():
                             f = vis(x, want_attn=False)   # L_fix uses fixed clean attention weights
                             L_cls = (f["cls"].squeeze(0) @ E_t)                                    # min -> away from obj text
                             pl = F.normalize(f["last"].squeeze(0), dim=-1)
-                            Lp = -(pl[obj_idx] * F.normalize(featM_last, dim=-1)[obj_idx]).sum(-1).mean()
+                            Lp = -(pl[obj_idx] * F.normalize(featR_last, dim=-1)[obj_idx]).sum(-1).mean()
                             # deep supervision: null obj tokens at intermediate layers toward the zeroed image
                             Lp_inter = x0.new_zeros(())
                             if w_inter and inter_layers:
                                 for i_l, l in enumerate(inter_layers):
                                     pil = F.normalize(f["hs"][l][:, 1:].squeeze(0), dim=-1)
-                                    Lp_inter = Lp_inter - (pil[obj_idx] * featM_inter[i_l][obj_idx]).sum(-1).mean()
+                                    Lp_inter = Lp_inter - (pil[obj_idx] * featR_inter[i_l][obj_idx]).sum(-1).mean()
                                 Lp_inter = Lp_inter / len(inter_layers)
                             w = A_clean[bg_idx]; w = w / w.sum().clamp_min(1e-9)
                             cs_bg = (pl[bg_idx] * F.normalize(clean_last, dim=-1)[bg_idx]).sum(-1)
@@ -242,10 +252,10 @@ def main():
                             fa = vis(adv)
                             cls_cos = (fa["cls"].squeeze(0) @ E_t).item()
                             opc = (F.normalize(fa["last"].squeeze(0), dim=-1)[obj_idx] *
-                                   F.normalize(featM_last, dim=-1)[obj_idx]).sum(-1).mean().item()
+                                   F.normalize(featR_last, dim=-1)[obj_idx]).sum(-1).mean().item()
                             opc_inter = float(np.mean([  # did the intermediate nulling take?
                                 (F.normalize(fa["hs"][l][:, 1:].squeeze(0), dim=-1)[obj_idx] *
-                                 featM_inter[i_l][obj_idx]).sum(-1).mean().item()
+                                 featR_inter[i_l][obj_idx]).sum(-1).mean().item()
                                 for i_l, l in enumerate(inter_layers)])) if inter_layers else float("nan")
                             pen = F.normalize(clip.visual_projection(fa["penult"].squeeze(0)), dim=-1)
                             roiP = ((pen[obj_idx] @ label_txt.T) * 100).softmax(-1)[:, 0].mean().item()
@@ -262,7 +272,7 @@ def main():
                             a = gen(adv, pt); p = present(a, obj); strict_present = strict_present or p
                             ans_rows.append([arm, obj, region, b, seed, "strict", pk, a.replace("\n", " ")[:200], p])
                         print(f"  [{arm}] eps={b:>4.0f} L2 seed={seed} Linf={linf:.0f}/255 | cls_cos_obj={cls_cos:.3f} "
-                              f"objpatch_cos_zero={opc:.3f} inter={opc_inter:.3f} roiP@-2={roiP:.3f} | "
+                              f"objpatch_cos_tgt={opc:.3f} inter={opc_inter:.3f} roiP@-2={roiP:.3f} | "
                               f"weak_absent={not present(wa,obj)} strict_absent={not strict_present}")
 
     for name, rows in [("answers", ans_rows), ("diagnostics", diag_rows), ("curves", curve_rows)]:
@@ -287,11 +297,11 @@ def main():
     with open(f"{args.outdir}/summary.csv", "w", newline="") as f:
         csv.writer(f).writerows(summ)
     print(f"\nsaved {args.outdir}/{{answers,diagnostics,curves,summary}}.csv")
-    print("READ: weak>>strict => nulling only removes the caption mention, object survives direct probing "
-          "(check diagnostics: objpatch_cos_zero high [L_p worked at -1] but roiP@-2 still high => didn't "
-          "propagate to the layer LLaVA reads). Weight on dog/cat/sign.")
+    print("READ: weak>>strict => steering only removes the caption mention, object survives direct probing "
+          "(check diagnostics: objpatch_cos_tgt high [L_p reached the target @ -1] but roiP@-2 still high => "
+          "didn't propagate to the layer LLaVA reads). Weight on dog/cat/sign.")
     print("DEEP-SUPERVISION A/B (base vs deep): if deep raises strict_removal AND drops roiP@-2, erasing early "
-          "propagated to LLaVA's layer -> the idea works. If deep nulls intermediate (objpatch_cos_zero_inter->1) "
+          "propagated to LLaVA's layer -> the idea works. If deep matches intermediate (objpatch_cos_tgt_inter->1) "
           "yet roiP@-2 stays high and strict_removal doesn't move -> later layers reconstruct the object through "
           "the residual stream; deep supervision doesn't reach the layer the decoder reads either.")
 

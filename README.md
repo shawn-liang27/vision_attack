@@ -183,15 +183,17 @@ uv run python region_token_match.py --dataset dataset.jsonl --budgets 8,16,32,64
 #     (LLaVA's input). The weak-vs-strict gap is the finding.
 uv run python advedm_r.py --dataset dataset.jsonl --regions seg,sim --budgets 20,40,80 --seeds 5
 
-# 26. deep-supervision variant of stage 25: ALSO null the object tokens at
-#     intermediate layers (default L/3, 2L/3), where patch tokens are still
-#     spatially local / less globally entangled -- the hypothesis being that
-#     erasing early cuts the object's info flow before deeper layers rebuild it.
-#     --arms base,deep runs last-layer-only vs +intermediate under identical
-#     seeds. Diagnostics test whether early erasure reaches LLaVA's layer [-2]:
-#     objpatch_cos_zero_inter (did inter nulling take) + roiP@-2 (did it propagate).
+# 26. deep-supervision variant of stage 25: ALSO steer the object tokens at
+#     TRULY-SHALLOW intermediate layers (2,4,6 of 24), where patch tokens are most
+#     spatially local / least globally entangled -- the fairest test of the
+#     hypothesis that erasing early cuts the object's info flow before deeper layers
+#     rebuild it. Target = inpaint image (object->background, the sound counterfactual;
+#     --target zeroed for the black-box ablation). --arms base,deep runs
+#     last-layer-only vs +intermediate under identical seeds. Diagnostics test whether
+#     early erasure reaches LLaVA's layer [-2]: objpatch_cos_tgt_inter (did inter
+#     steering reach the target) + roiP@-2 (did it propagate).
 uv run python advedm_r.py --dataset dataset.jsonl --regions seg,sim --budgets 20,40,80 \
-    --seeds 5 --arms base,deep --inter-layers 8,16 --w-inter 1.0
+    --seeds 5 --arms base,deep --inter-layers 2,4,6 --target inpaint --w-inter 1.0
 ```
 
 Outputs land in `results/`: `stats_<tag>.txt` and `patch_analysis_<tag>.png`.
