@@ -194,6 +194,17 @@ uv run python advedm_r.py --dataset dataset.jsonl --regions seg,sim --budgets 20
 #     steering reach the target) + roiP@-2 (did it propagate).
 uv run python advedm_r.py --dataset dataset.jsonl --regions seg,sim --budgets 20,40,80 \
     --seeds 5 --arms base,deep --inter-layers 2,4,6 --target inpaint --w-inter 1.0
+
+# 27. LAYER ABLATION + per-layer PROPAGATION PROFILE for the early-layer attack
+#     (dog, cat only). Part 1: 8 arms (base + singles/pairs/triple of shallow
+#     layers 2,4,6) x eps=16 L2 x 5 seeds -> which layers do the work (additive vs
+#     synergistic vs dominated). All arms keep the AdvEDM-R backbone; 'base' =
+#     backbone only (control + eval-validity check). Full captions + degeneracy
+#     flag + the inpaint image's own caption logged so destruction != concealment.
+#     Part 2: on the L2_L4_L6 adv images, roiP per block 1..24 (clean vs adv,
+#     mean+/-std over seeds) -> does early corruption propagate to block 23 (LLaVA's
+#     input) or does the residual stream restore the signal mid-network.
+uv run python layer_ablation.py --dataset dataset.jsonl --objects dog,cat --eps 16 --seeds 5
 ```
 
 Outputs land in `results/`: `stats_<tag>.txt` and `patch_analysis_<tag>.png`.
