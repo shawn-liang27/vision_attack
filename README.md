@@ -195,16 +195,16 @@ uv run python advedm_r.py --dataset dataset.jsonl --regions seg,sim --budgets 20
 uv run python advedm_r.py --dataset dataset.jsonl --regions seg,sim --budgets 20,40,80 \
     --seeds 5 --arms base,deep --inter-layers 2,4,6 --target inpaint --w-inter 1.0
 
-# 27. LAYER ABLATION + per-layer PROPAGATION PROFILE for the early-layer attack
-#     (dog, cat only). Part 1: 8 arms (base + singles/pairs/triple of shallow
-#     layers 2,4,6) x eps=16 L2 x 5 seeds -> which layers do the work (additive vs
-#     synergistic vs dominated). All arms keep the AdvEDM-R backbone; 'base' =
-#     backbone only (control + eval-validity check). Full captions + degeneracy
-#     flag + the inpaint image's own caption logged so destruction != concealment.
-#     Part 2: on the L2_L4_L6 adv images, roiP per block 1..24 (clean vs adv,
-#     mean+/-std over seeds) -> does early corruption propagate to block 23 (LLaVA's
-#     input) or does the residual stream restore the signal mid-network.
-uv run python layer_ablation.py --dataset dataset.jsonl --objects dog,cat --eps 16 --seeds 5
+# 27. LAYER ABLATION + per-block PROPAGATION PROFILE for the early-layer attack
+#     (dog, cat). Negation-aware clause-level grading; STRICT = present in ANY of
+#     {describe,direct,list,presup,detail}; reality-strip ("dog statue") + image-
+#     destruction flagged; inpaint image validity-gated. Propagation roiP uses
+#     post_layernorm + contrastive P(obj) and a clean-vs-adv verdict.
+#   C2 (the key test): does the INPAINT target -- not the shallow layers -- explain
+#     removal? base arm, inpaint vs zeroed, same eps/seeds:
+uv run python layer_ablation.py --arms base --target inpaint,zeroed --eps 16 --seeds 5
+#   C1+C3: shallow-ONLY arms (backbone off), de-saturated eps sweep, more seeds:
+uv run python layer_ablation.py --backbone off --arms all --target inpaint --eps 4,8,12 --seeds 15
 ```
 
 Outputs land in `results/`: `stats_<tag>.txt` and `patch_analysis_<tag>.png`.
