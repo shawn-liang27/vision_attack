@@ -205,6 +205,16 @@ uv run python advedm_r.py --dataset dataset.jsonl --regions seg,sim --budgets 20
 uv run python layer_ablation.py --arms base --target inpaint,zeroed --eps 16 --seeds 5
 #   C1+C3: shallow-ONLY arms (backbone off), de-saturated eps sweep, more seeds:
 uv run python layer_ablation.py --backbone off --arms all --target inpaint --eps 4,8,12 --seeds 15
+
+# 28. SINGLE-LAYER STEERING SWEEP (lean): does attacking an EARLIER CLIP block conceal
+#     the object better than attacking block 23 (what LLaVA reads)? Minimal loss only --
+#     steer the seg-mask object patch tokens toward the inpaint image's tokens at ONE
+#     block L (no L_cls, no L_fix). Whole-image delta, L_inf sweep {8,16,32}/255, one
+#     block per arm over {2,4,6,8,12,16,20,23} (baseline=23). dog,cat x 5 seeds. Metric:
+#     STRICT removal % across {describe,is-there,list,what-animal,detail}, negation-aware.
+#     Output: removal_vs_layer.png (strict% vs block, per budget) + summary/answers csv.
+uv run python layer_sweep.py --dataset dataset.jsonl --objects dog,cat \
+    --layers 2,4,6,8,12,16,20,23 --eps 8,16,32 --seeds 5
 ```
 
 Outputs land in `results/`: `stats_<tag>.txt` and `patch_analysis_<tag>.png`.
