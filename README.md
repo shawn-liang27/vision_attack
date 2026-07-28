@@ -247,6 +247,16 @@ uv run python dilated_attack.py --dataset dataset.jsonl --objects dog \
 #     overlap says whether one U generalizes (shared) or must be per-object. Raw + unit-
 #     normalized (direction-only) spectra. Output: subspace_spectrum.png + stats.txt.
 uv run python object_subspace.py --dataset dataset.jsonl --objects dog,cat,car
+
+# 32. DETECTION-relevant rank (spectrum says variance; this says detection). Sweep the rank of
+#     the REMOVED subspace in the oracle: h_mod[i] = h_clean[i] - U_k U_k^T d_i over the 1.5x
+#     region (U_k = top-k right singular vectors of the region's {d_i}). k=0 -> clean (no
+#     change); k=full -> h_inpaint (the working 1.5x oracle). Smallest k that removes the object
+#     = the rank a robust removal loss must zero per token. captured_energy per k = cumulative EV,
+#     so the plot shows whether the removing-k sits LOW on the variance curve (top-few directions)
+#     or needs the tail (~full substitution). No optimization; read-layer hook. Corrected scoring.
+uv run python oracle_rank_sweep.py --dataset dataset.jsonl --objects dog \
+    --dilate 1.5 --ranks 1,3,5,10,15,22,38,68
 ```
 
 Outputs land in `results/`: `stats_<tag>.txt` and `patch_analysis_<tag>.png`.
