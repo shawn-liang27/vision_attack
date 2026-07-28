@@ -215,6 +215,15 @@ uv run python layer_ablation.py --backbone off --arms all --target inpaint --eps
 #     Output: removal_vs_layer.png (strict% vs block, per budget) + summary/answers csv.
 uv run python layer_sweep.py --dataset dataset.jsonl --objects dog,cat \
     --layers 2,4,6,8,12,16,20,23 --eps 8,16,32 --seeds 5
+
+# 29. ORACLE token-substitution: is object-region-confined removal even SUFFICIENT?
+#     No optimization. Hook LLaVA's own vision tower; at block 23 (hidden_states[-2])
+#     replace ONLY the object-region tokens of the CLEAN image with the INPAINT image's
+#     tokens at the same positions; generate. Perfect region removal, zero pixel cost.
+#     Region variants (full/tight/any/dilate2) test the "expand the region" axis + the
+#     <0.3-coverage boundary-token leak. full == inpaint result is the hook sanity check.
+#     Still names object => region confinement + context leakage is the ceiling.
+uv run python oracle_substitution.py --dataset dataset.jsonl --objects dog,cat,car
 ```
 
 Outputs land in `results/`: `stats_<tag>.txt` and `patch_analysis_<tag>.png`.
