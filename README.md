@@ -227,6 +227,17 @@ uv run python layer_sweep.py --dataset dataset.jsonl --objects dog,cat,car \
 #     empty image -- sycophancy, not detection); probes are all non-leading.
 uv run python oracle_substitution.py --dataset dataset.jsonl --objects dog \
     --dilations 1.0,1.25,1.5,2.0,2.5
+
+# 30. PROOF-MOTIVATED ATTACK REBUILD. Every choice follows from a proof: region = 1.5x
+#     dilated (oracle proved 1.5x removes, tight 1.0x does not); L_fix preserves ONLY
+#     tokens OUTSIDE the band (halo free to move -- inpaint neighbors differ from clean);
+#     LOSS minimizes DISTANCE to the inpaint tokens, not cosine (check_amplification: cosine
+#     reached proj~1, object intact). Two arms -- l2 (per-patch relative squared distance) and
+#     proj (the object-direction coefficient). Attack at hidden_states[-2], whole-image delta,
+#     L_inf {8,16,32}/255. Diagnostics log achieved proj/relL2 over the region (oracle target
+#     = 0): does a bounded attack reach what the oracle needed, and does removal follow?
+uv run python dilated_attack.py --dataset dataset.jsonl --objects dog \
+    --arms l2,proj --eps 8,16,32 --dilate 1.5 --seeds 5
 ```
 
 Outputs land in `results/`: `stats_<tag>.txt` and `patch_analysis_<tag>.png`.
