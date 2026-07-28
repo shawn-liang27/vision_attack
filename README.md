@@ -216,14 +216,16 @@ uv run python layer_ablation.py --backbone off --arms all --target inpaint --eps
 uv run python layer_sweep.py --dataset dataset.jsonl --objects dog,cat \
     --layers 2,4,6,8,12,16,20,23 --eps 8,16,32 --seeds 5
 
-# 29. ORACLE token-substitution: is object-region-confined removal even SUFFICIENT?
-#     No optimization. Hook LLaVA's own vision tower; at block 23 (hidden_states[-2])
-#     replace ONLY the object-region tokens of the CLEAN image with the INPAINT image's
-#     tokens at the same positions; generate. Perfect region removal, zero pixel cost.
-#     Region variants (full/tight/any/dilate2) test the "expand the region" axis + the
-#     <0.3-coverage boundary-token leak. full == inpaint result is the hook sanity check.
-#     Still names object => region confinement + context leakage is the ceiling.
-uv run python oracle_substitution.py --dataset dataset.jsonl --objects dog,cat,car
+# 29. ORACLE token-substitution + DILATION SWEEP: how large must a perfectly-removed
+#     region be to conceal the object? No optimization. Hook LLaVA's own vision tower;
+#     at block 23 (hidden_states[-2]) replace the region's CLEAN tokens with the INPAINT
+#     tokens; generate. Sweep region size by token-count multiples {1,1.25,1.5,2,2.5}x
+#     of the tight object mask (nearest halo tokens added first) to locate the removal
+#     threshold. oracle_full == inpaint result is the hook sanity check. PROBE FIX: the
+#     presupposition prompt is dropped (LLaVA answers "a car is in this image" on an
+#     empty image -- sycophancy, not detection); probes are all non-leading.
+uv run python oracle_substitution.py --dataset dataset.jsonl --objects dog \
+    --dilations 1.0,1.25,1.5,2.0,2.5
 ```
 
 Outputs land in `results/`: `stats_<tag>.txt` and `patch_analysis_<tag>.png`.
