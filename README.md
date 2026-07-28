@@ -238,6 +238,15 @@ uv run python oracle_substitution.py --dataset dataset.jsonl --objects dog \
 #     = 0): does a bounded attack reach what the oracle needed, and does removal follow?
 uv run python dilated_attack.py --dataset dataset.jsonl --objects dog \
     --arms l2,proj --eps 8,16,32 --dilate 1.5 --seeds 5
+
+# 31. IS OBJECT-NESS LOW-DIMENSIONAL? SVD the per-patch object directions we already have --
+#     no collection, no optimization, no LLaVA. d_i = h_clean[i] - h_inpaint[i] at the read
+#     layer over object patches; stack -> SVD -> spectrum. Small k@90/95% => object-ness is
+#     low-rank and a rank-k subspace-projection loss ( min ||U_k^T (h_adv - h_inpaint)||^2 )
+#     can be built from these images and tested today; k = k@95%. Cross-object principal-angle
+#     overlap says whether one U generalizes (shared) or must be per-object. Raw + unit-
+#     normalized (direction-only) spectra. Output: subspace_spectrum.png + stats.txt.
+uv run python object_subspace.py --dataset dataset.jsonl --objects dog,cat,car
 ```
 
 Outputs land in `results/`: `stats_<tag>.txt` and `patch_analysis_<tag>.png`.
