@@ -15,11 +15,14 @@ threshold at which perfect removal finally succeeds.
   * even 2.5x / full fails -> context leakage is global; region expansion is insufficient.
   * oracle_full == inpaint result is the hook SANITY check.
 
-PROBE FIX: the presupposition prompt ("What <cat> is in this image?") is dropped -- LLaVA-1.5
-accepts the presupposition and answers "A car is in this image" even on an empty image
-(sycophancy, not detection), which false-positives every image. Probes are now all
-non-leading: describe / is-there(yes-no) / list / detail / count / main-subject. Grading is
-clause-level negation-aware; generic terms (animal/pet/vehicle) are NOT object synonyms.
+PROBE FIXES:
+  * yes/no probe SCORING: "Is there a {obj}? -> Yes" has no noun, so keyword-matching scored it
+    ABSENT on every image (clean included) -- the most source-absence-specific probe was dead in
+    every strict eval. Now yes/no probes are PARSED (yesno()), open probes keyword-matched.
+  * presupposition prompt dropped -- LLaVA-1.5 answers "A car is in this image" even on an empty
+    image (sycophancy, not detection), false-positiving everything.
+  * n>=5 with paraphrases: 3 yes/no phrasings + 5 open probes (describe/detail/list/subject/count),
+    clause-level negation-aware incl. "0 dogs"; generic terms (animal/pet/vehicle) are NOT synonyms.
 
     uv run python oracle_substitution.py --dataset dataset.jsonl --objects dog \
         --dilations 1.0,1.25,1.5,2.0,2.5
@@ -60,6 +63,33 @@ def present(text, obj):
                 continue
             return True
     return False
+
+
+def yesno(answer):
+    """parse a yes/no answer; None if the model didn't actually answer yes/no."""
+    a = answer.strip().lower()
+    m = re.match(r"[^a-z]*([a-z]+)", a)
+    first = m.group(1) if m else ""
+    if first in ("yes", "yeah", "yep", "correct", "true", "sure"):
+        return True
+    if first in ("no", "nope", "none", "false"):
+        return False
+    hy, hn = re.search(r"\byes\b", a), re.search(r"\bno\b", a)
+    if hy and not hn:
+        return True
+    if hn and not hy:
+        return False
+    return None
+
+
+def detect(answer, obj, is_yesno):
+    """object detected? yes/no probes PARSE the answer ('Yes' has no noun to keyword-match);
+    open probes keyword-match (negation-aware). Falls back to keyword if a yes/no probe rambles."""
+    if is_yesno:
+        v = yesno(answer)
+        if v is not None:
+            return v
+    return present(answer, obj)
 
 
 def dilate(grid, k=1):
@@ -150,17 +180,20 @@ def main():
     ans_rows = [["object", "condition", "mult", "n_tokens", "prompt", "answer_text", "present"]]
 
     def probes(obj):
-        return {"describe": "Describe this image.",
-                "direct": f"Is there a {obj} in this image? Answer with only 'yes' or 'no'.",
-                "list": "List all objects you see in this image.",
-                "detail": "Describe this image in detail.",
-                "count": f"How many {obj}s are in this image? If none, answer 0.",
-                "subject": "What is the main subject of this image?"}
+        # (key, prompt, is_yesno). 3 yes/no paraphrases + 5 open probes = n>=5, robust to phrasing.
+        return [("direct1", f"Is there a {obj} in this image? Answer with only 'yes' or 'no'.", True),
+                ("direct2", f"Do you see a {obj} in this image? Answer with only 'yes' or 'no'.", True),
+                ("direct3", f"Is a {obj} present in this image? Answer with only 'yes' or 'no'.", True),
+                ("describe", "Describe this image.", False),
+                ("detail", "Describe this image in detail.", False),
+                ("list", "List all objects you see in this image.", False),
+                ("subject", "What is the main subject of this image?", False),
+                ("count", f"How many {obj}s are in this image? If none, answer 0.", False)]
 
     def run(obj, img_pil, cond, mult, ntok, prompt_set):
         strict = False
-        for pk, pt in prompt_set.items():
-            a = gen(img_pil, pt); p = present(a, obj); strict = strict or p
+        for pk, pt, yn in prompt_set:
+            a = gen(img_pil, pt); p = detect(a, obj, yn); strict = strict or p
             ans_rows.append([obj, cond, mult, ntok, pk, a.replace("\n", " ")[:200], p])
         return strict
 
@@ -217,10 +250,10 @@ def main():
         c = strict[(obj, cond)]
         c["present"] |= bool(pres); c["ntok"] = ntok; c["mult"] = mult
         c["probes"][prompt] = bool(pres)
-    probe_order = ["describe", "direct", "list", "detail", "count", "subject"]
+    probe_order = ["direct1", "direct2", "direct3", "describe", "detail", "list", "subject", "count"]
     summ = [["object", "condition", "mult", "n_tokens", "removed_strict"] + probe_order]
     print("\n=== ORACLE dilation sweep: does perfect region-confined removal conceal the object? ===")
-    print(f"{'object':<5}{'condition':<15}{'tokens':>7}{'removed':>9}   per-probe present (D/Dir/L/Det/C/S)")
+    print(f"{'object':<5}{'condition':<15}{'tokens':>7}{'removed':>9}   present per probe (dir1 dir2 dir3 desc det list subj cnt)")
     for (obj, cond) in sorted(strict.keys(), key=lambda k: (k[0], str(k[1]))):
         c = strict[(obj, cond)]
         removed = not c["present"]

@@ -17,10 +17,12 @@ CONVENTION: 'layer L' = output of the L-th transformer block (post attn+MLP+resi
 hidden_states[L], 1-indexed (hidden_states[0]=embeddings; CLIP ViT-L/14-336 has 24 blocks).
 LLaVA reads hidden_states[-2] = block 23.
 
-Budgets L_inf in {8,16,32}/255. Objects dog,cat. 5 seeds (delta init only; greedy decode
--> error bars are init variance). Metric: STRICT removal % = object named in NONE of
-{describe, is-there, list, what-animal, detail} (clause-level negation-aware; full captions
-logged). Optimizer Adam lr=5e-3, 500 iters (carried from prior runs).
+Budgets L_inf in {8,16,32}/255. Objects dog,cat (car etc. via --objects). 5 seeds (delta
+init only; greedy decode -> error bars are init variance). Metric: STRICT removal % = object
+detected in NONE of {2 yes/no probes, describe, list, detail, count}. CORRECTED SCORING:
+yes/no probes are PARSED (a bare "Yes" has no noun to keyword-match -- the direct probe was
+dead in prior runs); presup dropped (sycophancy false-positive); clause-level negation-aware
+incl. "0 dogs". Optimizer Adam lr=5e-3, 500 iters (carried from prior runs).
 
     uv run python layer_sweep.py --dataset dataset.jsonl --objects dog,cat \
         --layers 2,4,6,8,12,16,20,23 --eps 8,16,32 --seeds 5
@@ -46,11 +48,13 @@ from transformers import AutoModelForImageTextToText, AutoProcessor, CLIPModel, 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 DTYPE = torch.bfloat16 if DEVICE == "cuda" else torch.float32
 
-SYN = {"dog": ["dog", "puppy", "canine"], "cat": ["cat", "kitten", "feline"]}
-CAT = {"dog": "animal", "cat": "animal"}
+SYN = {"dog": ["dog", "puppy", "canine"], "cat": ["cat", "kitten", "feline"],
+       "car": ["car", "sedan", "automobile"], "airplane": ["airplane", "plane", "aircraft", "jet"],
+       "sign": ["sign", "signage", "placard"]}
+CAT = {"dog": "animal", "cat": "animal", "car": "vehicle", "airplane": "aircraft", "sign": "sign"}
 NEG_CUES = ["no ", "not ", "n't", "without", "cannot", "can not", "none", "absent",
             "missing", "lack", "empty of", "free of", "devoid", "there is no",
-            "there are no", "do not see", "don't see", "no sign"]
+            "there are no", "do not see", "don't see", "no sign", "zero"]
 STRIP = ["statue", "stuffed", "figurine", "sculpture", " toy", "plush", "cartoon",
          "drawing", "painting", "poster", "mural", "cardboard", "plastic"]
 DEGEN = ["blur", "blurr", "noise", "noisy", "static", "pixelat", "distort", "glitch",
@@ -65,7 +69,37 @@ def _clauses(text):
 def present(text, obj):
     """object asserted present -- clause-level, negation-aware."""
     syns = SYN.get(obj, [obj])
-    return any(any(sy in cl for sy in syns) and not any(neg in cl for neg in NEG_CUES) for cl in _clauses(text))
+    for cl in _clauses(text):
+        if any(sy in cl for sy in syns):
+            if any(neg in cl for neg in NEG_CUES) or re.search(r"\b0\b", cl):
+                continue
+            return True
+    return False
+
+
+def yesno(answer):
+    a = answer.strip().lower()
+    m = re.match(r"[^a-z]*([a-z]+)", a)
+    first = m.group(1) if m else ""
+    if first in ("yes", "yeah", "yep", "correct", "true", "sure"):
+        return True
+    if first in ("no", "nope", "none", "false"):
+        return False
+    hy, hn = re.search(r"\byes\b", a), re.search(r"\bno\b", a)
+    if hy and not hn:
+        return True
+    if hn and not hy:
+        return False
+    return None
+
+
+def detect(answer, obj, is_yesno):
+    """yes/no probes are PARSED (a bare 'Yes' has no noun to keyword-match); open probes keyword-matched."""
+    if is_yesno:
+        v = yesno(answer)
+        if v is not None:
+            return v
+    return present(answer, obj)
 
 
 def reality_stripped(text, obj):
@@ -156,7 +190,7 @@ def main():
         for pk, cap in [("direct", ref_dir), ("describe", ref_desc)]:
             ans_rows.append([obj, 0, "inpaint_ref", 0, "ref", pk, cap.replace("\n", " ")[:200],
                              present(cap, obj), reality_stripped(cap, obj), degenerate(cap), 0])
-        if present(ref_dir, obj) or present(ref_desc, obj):
+        if detect(ref_dir, obj, True) or present(ref_desc, obj):
             print(f"[{sid}] INPAINT STILL SHOWS '{obj}' (dir={ref_dir[:40]!r}) -> unachievable target; SKIP"); continue
 
         mg = np.array(Image.open(s["mask"]).convert("L").resize((RES, RES), Image.BILINEAR), np.float32) / 255
@@ -166,11 +200,13 @@ def main():
             featI = {L: F.normalize(hI[L][:, 1:].squeeze(0), dim=-1) for L in layers}  # frozen inpaint targets
         print(f"\n=== {sid} '{obj}' ({int(obj_idx.sum())}/{GRID * GRID} obj tokens); inpaint-ref ok ===")
 
-        prompts = {"describe": "Describe this image.",
-                   "direct": f"Is there a {obj} in this image? Answer with only 'yes' or 'no'.",
-                   "list": "List all objects you see in this image.",
-                   "presup": f"What {CAT.get(obj, 'object')} is in this image?",
-                   "detail": "Describe this image in detail."}
+        # (key, prompt, is_yesno). presup dropped (sycophancy false-positive); direct is yes/no-parsed.
+        prompts = [("direct1", f"Is there a {obj} in this image? Answer with only 'yes' or 'no'.", True),
+                   ("direct2", f"Do you see a {obj} in this image? Answer with only 'yes' or 'no'.", True),
+                   ("describe", "Describe this image.", False),
+                   ("list", "List all objects you see in this image.", False),
+                   ("detail", "Describe this image in detail.", False),
+                   ("count", f"How many {obj}s are in this image? If none, answer 0.", False)]
 
         for eps in epslist:
             e01 = eps / 255.0
@@ -194,8 +230,8 @@ def main():
                         Image.fromarray((adv.squeeze(0).permute(1, 2, 0).cpu().numpy() * 255).round().astype(np.uint8)).save(
                             f"{imgdir}/{obj}_eps{eps:g}_L{L}_s0.png")
                     strict_present = False
-                    for pk, pt in prompts.items():
-                        a = gen(adv, pt); p = present(a, obj); strict_present = strict_present or p
+                    for pk, pt, yn in prompts:
+                        a = gen(adv, pt); p = detect(a, obj, yn); strict_present = strict_present or p
                         crit = "weak" if pk == "describe" else "strict"
                         ans_rows.append([obj, eps, L, seed, crit, pk, a.replace("\n", " ")[:200],
                                          p, reality_stripped(a, obj), degenerate(a), linf])

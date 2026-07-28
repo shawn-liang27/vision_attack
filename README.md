@@ -211,9 +211,10 @@ uv run python layer_ablation.py --backbone off --arms all --target inpaint --eps
 #     steer the seg-mask object patch tokens toward the inpaint image's tokens at ONE
 #     block L (no L_cls, no L_fix). Whole-image delta, L_inf sweep {8,16,32}/255, one
 #     block per arm over {2,4,6,8,12,16,20,23} (baseline=23). dog,cat x 5 seeds. Metric:
-#     STRICT removal % across {describe,is-there,list,what-animal,detail}, negation-aware.
-#     Output: removal_vs_layer.png (strict% vs block, per budget) + summary/answers csv.
-uv run python layer_sweep.py --dataset dataset.jsonl --objects dog,cat \
+#     STRICT removal % (CORRECTED scoring: yes/no probes PARSED -- the direct probe was
+#     dead when keyword-matched; presup dropped; negation-aware). Output: removal_vs_layer.png
+#     + summary/answers csv. Re-run cat,car under corrected scoring (prior results suspect):
+uv run python layer_sweep.py --dataset dataset.jsonl --objects dog,cat,car \
     --layers 2,4,6,8,12,16,20,23 --eps 8,16,32 --seeds 5
 
 # 29. ORACLE token-substitution + DILATION SWEEP: how large must a perfectly-removed
