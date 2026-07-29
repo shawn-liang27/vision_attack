@@ -257,9 +257,14 @@ uv run python object_subspace.py --dataset dataset.jsonl --objects dog,cat,car
 #     or needs the tail (~full substitution). No optimization; read-layer hook. Corrected scoring.
 uv run python oracle_rank_sweep.py --dataset dataset.jsonl --objects dog \
     --dilate 1.5 --ranks 1,3,5,10,15,22,38,68
-```
 
-Outputs land in `results/`: `stats_<tag>.txt` and `patch_analysis_<tag>.png`.
+# 33. REGION DIAGNOSTIC: is the substitution region actually ON the object? Compares the mask-
+#     derived token region against where features actually change, ||d_i||=||h_clean-h_inpaint||.
+#     Per object: fraction of d-energy inside the mask region and 1.5x, IoU(mask, top-||d|| tokens),
+#     and mask-vs-d-energy centroid distance. Low e_in_mask / large centroid_dist => mask misplaced
+#     or undersized (explains why 1.5x removes one object but not another with no code bug). Saves
+#     region_check_<obj>.png (image+mask | ||d|| heatmap | image+1.5x). CLIP only, no LLaVA.
+uv run python check_region.py --dataset dataset.jsonl --objects dog,cat,car
 
 ## What stage 3 measures
 
