@@ -224,9 +224,11 @@ uv run python layer_sweep.py --dataset dataset.jsonl --objects dog,cat,car \
 #     of the tight object mask (nearest halo tokens added first) to locate the removal
 #     threshold. oracle_full == inpaint result is the hook sanity check. PROBE FIX: the
 #     presupposition prompt is dropped (LLaVA answers "a car is in this image" on an
-#     empty image -- sycophancy, not detection); probes are all non-leading.
-uv run python oracle_substitution.py --dataset dataset.jsonl --objects dog \
-    --dilations 1.0,1.25,1.5,2.0,2.5
+#     empty image -- sycophancy, not detection); probes are all non-leading. --sink-test
+#     also substitutes sinks-only and 1.5x-union-sinks: do the off-object massive-activation
+#     tokens carry the object (explaining why 1.5x removes dog but not cat/car)?
+uv run python oracle_substitution.py --dataset dataset.jsonl --objects dog,cat,car \
+    --dilations 1.0,1.25,1.5,2.0,2.5 --sink-test
 
 # 30. PROOF-MOTIVATED ATTACK REBUILD. Every choice follows from a proof: region = 1.5x
 #     dilated (oracle proved 1.5x removes, tight 1.0x does not); L_fix preserves ONLY
@@ -244,8 +246,10 @@ uv run python dilated_attack.py --dataset dataset.jsonl --objects dog \
 #     layer over object patches; stack -> SVD -> spectrum. Small k@90/95% => object-ness is
 #     low-rank and a rank-k subspace-projection loss ( min ||U_k^T (h_adv - h_inpaint)||^2 )
 #     can be built from these images and tested today; k = k@95%. Cross-object principal-angle
-#     overlap says whether one U generalizes (shared) or must be per-object. Raw + unit-
-#     normalized (direction-only) spectra. Output: subspace_spectrum.png + stats.txt.
+#     overlap says whether one U generalizes (shared) or must be per-object. Reports THREE
+#     spectra: RAW (magnitude-weighted, hijacked by massive-activation sink tokens -> misleadingly
+#     low-rank), UNIT (direction-only), UNIT SINK-EXCLUDED (||h_clean||>4x median dropped, the
+#     trustworthy rank). Output: subspace_spectrum.png + stats.txt.
 uv run python object_subspace.py --dataset dataset.jsonl --objects dog,cat,car
 
 # 32. DETECTION-relevant rank (spectrum says variance; this says detection). Sweep the rank of
@@ -255,15 +259,18 @@ uv run python object_subspace.py --dataset dataset.jsonl --objects dog,cat,car
 #     = the rank a robust removal loss must zero per token. captured_energy per k = cumulative EV,
 #     so the plot shows whether the removing-k sits LOW on the variance curve (top-few directions)
 #     or needs the tail (~full substitution). No optimization; read-layer hook. Corrected scoring.
+#     --exclude-sinks builds U_k from a sink-free object basis (||h_clean|| outliers dropped) so the
+#     top-k components are object directions, not sink directions.
 uv run python oracle_rank_sweep.py --dataset dataset.jsonl --objects dog \
-    --dilate 1.5 --ranks 1,3,5,10,15,22,38,68
+    --dilate 1.5 --ranks 1,3,5,10,15,22,38,68 --exclude-sinks
 
-# 33. REGION DIAGNOSTIC: is the substitution region actually ON the object? Compares the mask-
-#     derived token region against where features actually change, ||d_i||=||h_clean-h_inpaint||.
-#     Per object: fraction of d-energy inside the mask region and 1.5x, IoU(mask, top-||d|| tokens),
-#     and mask-vs-d-energy centroid distance. Low e_in_mask / large centroid_dist => mask misplaced
-#     or undersized (explains why 1.5x removes one object but not another with no code bug). Saves
-#     region_check_<obj>.png (image+mask | ||d|| heatmap | image+1.5x). CLIP only, no LLaVA.
+# 33. REGION DIAGNOSTIC (sink-robust): is the substitution region ON the object? Raw ||d_i|| is
+#     hijacked by a few massive-activation "sink" tokens (||h_clean||>4x median, ~10x norm, OFF the
+#     object) that dominate the energy and falsely flag good masks. This version identifies sinks by
+#     the CLEAN norm, excludes them, and judges the mask on the MEDIAN change inside vs outside
+#     (outlier-robust). Per object: n_sink (+ how many in mask), raw vs sink-excluded e_in_mask, and
+#     obj/bg median ||d|| ratio (>~2 => mask is on real object change). Saves region_check_<obj>.png
+#     (image+mask | ||d|| clipped w/ sinks x'd | ||h_clean|| norm). CLIP only, no LLaVA.
 uv run python check_region.py --dataset dataset.jsonl --objects dog,cat,car
 
 ## What stage 3 measures

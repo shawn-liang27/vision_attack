@@ -1,17 +1,17 @@
-"""Diagnostic: is the substitution region actually ON the object?
+"""Diagnostic: is the substitution region on the object -- ROBUST to massive-activation tokens.
 
-The oracle substitutes tokens chosen by the MASK (coverage>0.3, then ring-dilated). But the ground
-truth of "which tokens carry the object" is where the features actually CHANGE when the object is
-removed: ||d_i|| = ||h_clean[i] - h_inpaint[i]|| at the read layer. If most d-energy falls OUTSIDE
-the mask region, or the mask centroid and the d-energy centroid are far apart, the mask is misplaced/
-undersized and the mask-centered 1.5x dilation misses the real object tokens -- which would explain
-why 1.5x removes one object (good mask) but not another (bad mask), with no per-object code bug.
+A handful of ViT/CLIP "attention sink" / massive-activation tokens (low-info patches with ~10x
+normal norm) dominate raw ||d_i|| = ||h_clean - h_inpaint||, because they aggregate global context
+and swing hugely when the image changes -- even though they sit OFF the object. Raw ||d||-energy
+fractions therefore falsely flag good masks. This version identifies the sink tokens by the CLEAN
+feature norm ||h_clean_i|| (intrinsic, not inpaint-driven), excludes them, and judges the mask on
+the MEDIAN change inside vs outside (outlier-robust).
 
-Per object prints: n0 (tight tokens), fraction of total d-energy INSIDE the mask region and inside
-1.5x, IoU(mask region, top-n0 ||d|| tokens), and the token-grid distance between mask centroid and
-d-energy centroid. Saves region_check_<obj>.png: [image+mask region] | [||d|| heatmap] | [image+1.5x].
+Per object prints: n_sinks (||h_clean|| outliers) and how many fall in the mask; raw vs sink-excluded
+e_in_mask; and obj/bg MEDIAN ||d|| ratio (>~2 => mask is on real object-driven change). Saves
+region_check_<obj>.png: [image+mask] | [||d|| clipped to 97th pct, sinks marked X] | [||h_clean|| norm].
 
-CLIP only, no LLaVA, no optimization.
+CLIP only, no LLaVA.
 
     uv run python check_region.py --dataset dataset.jsonl --objects dog,cat,car
 """
@@ -33,25 +33,6 @@ from transformers import CLIPModel, CLIPProcessor  # noqa: E402
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 
-def dilate(grid, k=1):
-    g = grid.copy()
-    for _ in range(k):
-        p = g.copy()
-        p[1:, :] |= g[:-1, :]; p[:-1, :] |= g[1:, :]; p[:, 1:] |= g[:, :-1]; p[:, :-1] |= g[:, 1:]
-        g = p
-    return g
-
-
-def ring_order(base):
-    ring = np.full(base.shape, 1 << 20, np.int64); ring[base] = 0; cur = base.copy(); r = 0
-    while not cur.all():
-        r += 1; nxt = dilate(cur, 1); newly = nxt & (~cur)
-        if not newly.any():
-            break
-        ring[newly] = r; cur = nxt
-    return np.argsort(ring.reshape(-1), kind="stable")
-
-
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--surrogate", default="openai/clip-vit-large-patch14-336")
@@ -59,7 +40,7 @@ def main():
     ap.add_argument("--objects", default="dog,cat,car")
     ap.add_argument("--res", type=int, default=336)
     ap.add_argument("--thresh", type=float, default=0.3)
-    ap.add_argument("--dilate", type=float, default=1.5)
+    ap.add_argument("--sink-mult", type=float, default=4.0, help="||h_clean|| > sink_mult * median => sink token")
     ap.add_argument("--outdir", default="results/region_check")
     args = ap.parse_args()
     RES = args.res
@@ -83,62 +64,63 @@ def main():
     with open(args.dataset) as f:
         samples = [s for s in (json.loads(l) for l in f if l.strip()) if s["object"] in args.objects.split(",")]
     os.makedirs(args.outdir, exist_ok=True)
-    gy, gx = np.mgrid[0:GRID, 0:GRID]
-    gy, gx = gy.reshape(-1), gx.reshape(-1)
+    gy, gx = np.mgrid[0:GRID, 0:GRID]; gy, gx = gy.reshape(-1), gx.reshape(-1)
 
-    print(f"{'obj':<5}{'n0':>4}{'e_in_mask':>11}{'e_in_1.5x':>11}{'IoU(mask,topd)':>16}{'centroid_dist':>15}  verdict")
+    print(f"{'obj':<5}{'n0':>4}{'n_sink':>7}{'sink_in_mask':>13}{'e_mask_raw':>12}{'e_mask_robust':>15}"
+          f"{'obj/bg_med_d':>14}  verdict")
     for s in samples:
         obj = s["object"]
         if not (os.path.exists(s["mask"]) and s.get("target") and os.path.exists(s["target"])):
             print(f"[{obj}] missing mask/inpaint; skip"); continue
         x0, xR = load01(s["image"]), load01(s["target"])
         with torch.no_grad():
-            d = (vis(x0) - vis(xR)).detach()               # (P,D)
-        dn2 = (d ** 2).sum(-1).cpu().numpy()               # (P,) per-token feature-change energy
-        total = dn2.sum() + 1e-12
+            hc = vis(x0); hi = vis(xR)
+        dn2 = ((hc - hi) ** 2).sum(-1).cpu().numpy()          # per-token change energy
+        cn = hc.norm(dim=-1).cpu().numpy()                    # per-token CLEAN norm (intrinsic; sinks are huge)
 
         mg = np.array(Image.open(s["mask"]).convert("L").resize((RES, RES), Image.BILINEAR), np.float32) / 255
-        cov = mg.reshape(GRID, PATCH, GRID, PATCH).mean((1, 3))          # (GRID,GRID) coverage
-        base = cov > args.thresh
-        n0 = int(base.sum())
+        base = mg.reshape(GRID, PATCH, GRID, PATCH).mean((1, 3)) > args.thresh
+        n0 = int(base.sum()); m1d = base.reshape(-1)
         if n0 == 0:
-            print(f"[{obj}] mask selects 0 tokens at thresh {args.thresh}; likely bad mask"); continue
-        order = ring_order(base)
-        T = min(GRID * GRID, max(n0, round(args.dilate * n0)))
-        r15 = np.zeros(GRID * GRID, bool); r15[order[:T]] = True
-        m1d = base.reshape(-1)
+            print(f"[{obj}] mask selects 0 tokens; bad mask"); continue
 
-        e_mask = dn2[m1d].sum() / total
-        e_15 = dn2[r15].sum() / total
-        topd = np.zeros(GRID * GRID, bool); topd[np.argsort(-dn2)[:n0]] = True
-        inter = (m1d & topd).sum(); union = (m1d | topd).sum()
-        iou = inter / max(union, 1)
-        # centroids in token-grid coords
-        mc = np.array([gy[m1d].mean(), gx[m1d].mean()])
-        w = dn2 / total
-        dc = np.array([(gy * w).sum(), (gx * w).sum()])
-        cdist = float(np.hypot(*(mc - dc)))
-        verdict = ("MASK OK" if (e_mask > 0.5 and cdist < 3) else
-                   "MASK SUSPECT (d-energy off the mask)" if cdist >= 3 or e_mask < 0.35 else "borderline")
-        print(f"{obj:<5}{n0:>4}{e_mask:>11.2f}{e_15:>11.2f}{iou:>16.2f}{cdist:>15.1f}  {verdict}")
+        sink = cn > args.sink_mult * np.median(cn)            # massive-activation tokens (by clean norm)
+        n_sink = int(sink.sum()); sink_in_mask = int((sink & m1d).sum())
+        nonsink = ~sink
+        e_raw = dn2[m1d].sum() / (dn2.sum() + 1e-9)
+        e_rob = dn2[m1d & nonsink].sum() / (dn2[nonsink].sum() + 1e-9)   # exclude sinks from the total
+        bg = nonsink & (~m1d)
+        obj_med = np.median(dn2[m1d & nonsink]) if (m1d & nonsink).any() else 0.0
+        bg_med = np.median(dn2[bg]) if bg.any() else 1e-9
+        ratio = obj_med / max(bg_med, 1e-9)
+        verdict = "MASK OK (object drives the change)" if ratio > 2 else \
+                  "MASK SUSPECT (object region no more changed than background)"
+        print(f"{obj:<5}{n0:>4}{n_sink:>7}{sink_in_mask:>13}{e_raw:>12.2f}{e_rob:>15.2f}{ratio:>14.1f}  {verdict}")
 
         # visualization
         img = np.asarray(Image.open(s["image"]).convert("RGB").resize((RES, RES), Image.BICUBIC))
-        up = lambda g: np.kron(g.reshape(GRID, GRID), np.ones((PATCH, PATCH)))   # 24x24 -> 336x336
-        fig, ax = plt.subplots(1, 3, figsize=(15, 5.2))
+        up = lambda g: np.kron(g.reshape(GRID, GRID), np.ones((PATCH, PATCH)))
+        fig, ax = plt.subplots(1, 3, figsize=(15, 5.4))
         ax[0].imshow(img); ax[0].imshow(up(m1d), cmap="Reds", alpha=0.45, vmin=0, vmax=1)
-        ax[0].set_title(f"{obj}: image + MASK region ({n0} tok)"); ax[0].axis("off")
-        hm = ax[1].imshow(dn2.reshape(GRID, GRID), cmap="viridis"); ax[1].set_title("||d_i|| (feature change) -- true object")
-        ax[1].axis("off"); fig.colorbar(hm, ax=ax[1], fraction=0.046)
-        ax[2].imshow(img); ax[2].imshow(up(r15), cmap="Blues", alpha=0.45, vmin=0, vmax=1)
-        ax[2].set_title(f"image + 1.5x region ({T} tok)"); ax[2].axis("off")
-        fig.suptitle(f"{obj}: e_in_mask={e_mask:.2f} e_in_1.5x={e_15:.2f} IoU={iou:.2f} centroid_dist={cdist:.1f} -> {verdict}")
+        ax[0].set_title(f"{obj}: image + MASK ({n0} tok)"); ax[0].axis("off")
+        vmax = np.percentile(dn2, 97)
+        hm = ax[1].imshow(dn2.reshape(GRID, GRID), cmap="viridis", vmax=vmax)
+        if n_sink:
+            ax[1].scatter(gx[sink], gy[sink], marker="x", c="red", s=60, label=f"{n_sink} sink tokens")
+            ax[1].legend(loc="lower right", fontsize=8)
+        ax[1].set_title(f"||d_i|| (clipped @97pct); sinks x'd"); ax[1].axis("off"); fig.colorbar(hm, ax=ax[1], fraction=0.046)
+        hn = ax[2].imshow(cn.reshape(GRID, GRID), cmap="magma")
+        ax[2].set_title("||h_clean|| norm -- sinks = intrinsic outliers"); ax[2].axis("off")
+        fig.colorbar(hn, ax=ax[2], fraction=0.046)
+        fig.suptitle(f"{obj}: n_sink={n_sink} (in_mask={sink_in_mask}) e_mask raw={e_raw:.2f}/robust={e_rob:.2f} "
+                     f"obj:bg median-d={ratio:.1f} -> {verdict}")
         fig.tight_layout(); fig.savefig(f"{args.outdir}/region_check_{obj}.png", dpi=120); plt.close(fig)
 
     print(f"\nsaved {args.outdir}/region_check_<obj>.png")
-    print("READ: e_in_mask high (>0.5) and centroid_dist small (<~3 tokens) => mask is on the object; a 1.5x failure "
-          "is a size/context effect (try 2-2.5x). e_in_mask low / centroid_dist large => the MASK is misplaced -- the "
-          "1.5x region misses the real object tokens; fix by defining the region from ||d_i|| (feature change), not the mask.")
+    print("READ: e_mask_raw low but e_mask_robust high AND obj/bg median-d > ~2 => the mask IS on the object; the low "
+          "raw fraction was massive-activation SINK tokens (see ||h_clean|| panel) hijacking the energy, not a bad mask. "
+          "Implication: exclude sinks from any d_i-based subspace/region; and test whether substituting the object region "
+          "PLUS the sink tokens removes the object where the region alone did not (object info aggregated into sinks).")
 
 
 if __name__ == "__main__":

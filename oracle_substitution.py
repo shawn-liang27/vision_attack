@@ -125,6 +125,8 @@ def main():
     ap.add_argument("--objects", default="dog")
     ap.add_argument("--res", type=int, default=336)
     ap.add_argument("--dilations", default="1.0,1.25,1.5,2.0,2.5", help="region size as multiples of the tight object-token count")
+    ap.add_argument("--sink-mult", type=float, default=4.0, help="||h_clean||>sink_mult*median => massive-activation sink token")
+    ap.add_argument("--sink-test", action="store_true", help="also run oracle over sinks-only and 1.5x-union-sinks")
     ap.add_argument("--outdir", default="results/oracle")
     args = ap.parse_args()
     RES = args.res
@@ -238,6 +240,24 @@ def main():
             finally:
                 h.remove()
             print(f"    {m:>4g}x  ({T:>3}/{GRID*GRID} tokens, {T/max(n0,1):.2f}x actual): removed={not strict}")
+
+        # sink test: do the massive-activation tokens (off-object, ||h_clean|| outliers) carry the object?
+        if args.sink_test:
+            cn = inpaint_tokens(clean_pil)[0, 1:].norm(dim=-1)      # clean feature norm -> sinks
+            sink_1d = cn > args.sink_mult * cn.median()
+            n_sink = int(sink_1d.sum()); sink_in_obj = int((sink_1d & torch.from_numpy(base.reshape(-1)).to(DEVICE)).sum())
+            T15 = min(GRID * GRID, max(n0, round(1.5 * n0)))
+            r15 = np.zeros(GRID * GRID, bool); r15[order[:T15]] = True
+            r15_1d = torch.from_numpy(r15).to(DEVICE)
+            print(f"  sink test: {n_sink} sink tokens ({sink_in_obj} inside tight mask):")
+            for cond, reg in [("oracle_sinks_only", sink_1d),
+                              ("oracle_1.5x+sinks", r15_1d | sink_1d)]:
+                h = vt.register_forward_hook(make_hook(reg, inp_hs))
+                try:
+                    strict = run(obj, clean_pil, cond, -1, int(reg.sum()), pr)
+                finally:
+                    h.remove()
+                print(f"    {cond:<18} ({int(reg.sum()):>3} tokens): removed={not strict}")
 
     with open(f"{args.outdir}/answers.csv", "w", newline="") as fp:
         csv.writer(fp).writerows(ans_rows)

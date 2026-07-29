@@ -105,6 +105,9 @@ def main():
     ap.add_argument("--res", type=int, default=336)
     ap.add_argument("--dilate", type=float, default=1.5, help="region = this multiple of the tight object-token count")
     ap.add_argument("--ranks", default="1,3,5,10,15,22,38,68")
+    ap.add_argument("--exclude-sinks", action="store_true",
+                    help="drop massive-activation tokens (||h_clean||>sink_mult*median) from the SVD basis + substitution so U_k is a clean object basis")
+    ap.add_argument("--sink-mult", type=float, default=4.0)
     ap.add_argument("--outdir", default="results/oracle_rank")
     args = ap.parse_args()
     RES = args.res
@@ -172,19 +175,26 @@ def main():
 
         h_clean = tokens(clean_pil); h_inp = tokens(inpaint_pil)     # (1,577,1024)
         d_patch = (h_clean - h_inp)[0, 1:]                           # (576,1024)
+        cn = h_clean[0, 1:].norm(dim=-1)                             # clean norm -> sinks
+        sink = cn > args.sink_mult * cn.median()
         mg = np.array(Image.open(s["mask"]).convert("L").resize((RES, RES), Image.BILINEAR), np.float32) / 255
         base = mg.reshape(GRID, PATCH, GRID, PATCH).mean((1, 3)) > 0.3
         n0 = int(base.sum()); order = ring_order(base)
         T = min(GRID * GRID, max(n0, round(args.dilate * n0)))
         sel = np.zeros(GRID * GRID, bool); sel[order[:T]] = True
         region_1d = torch.from_numpy(sel).to(DEVICE)
+        sink_in_region = int((sink & region_1d).sum())
+        if args.exclude_sinks:                                       # clean object basis: drop in-region sinks
+            region_1d = region_1d & (~sink)
         D = d_patch[region_1d].float()                              # (n,1024) region object directions
         n = D.shape[0]
         _, _, Vh = torch.linalg.svd(D, full_matrices=False)         # Vh: (n,1024) right singular vectors
         Denergy = (D ** 2).sum().clamp_min(1e-12)
         h_clean_region = h_clean[0, 1:][region_1d].float()          # (n,1024)
-        ks = [0] + [k for k in ranks_req if 0 < k < n] + [n]        # 0=clean, n=full(=inpaint oracle)
-        print(f"\n=== {sid} '{obj}' region={T} tokens ({T/n0:.2f}x), rank range 0..{n} ===")
+        ks = [0] + [k for k in ranks_req if 0 < k < n] + [n]        # 0=clean, n=full(=inpaint oracle over region)
+        print(f"\n=== {sid} '{obj}' region={int(region_1d.sum())} tokens ({T/n0:.2f}x nominal), "
+              f"sinks: {int(sink.sum())} total / {sink_in_region} in region"
+              f"{' (excluded)' if args.exclude_sinks else ''}, rank range 0..{n} ===")
 
         first_removed = None
         for k in ks:
