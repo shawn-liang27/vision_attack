@@ -273,6 +273,19 @@ uv run python oracle_rank_sweep.py --dataset dataset.jsonl --objects dog \
 #     (image+mask | ||d|| clipped w/ sinks x'd | ||h_clean|| norm). CLIP only, no LLaVA.
 uv run python check_region.py --dataset dataset.jsonl --objects dog,cat,car
 
+# 34. WHICH LOW-RANK SUBSPACE CONTROLS RECOGNITION? Four constructions, one oracle validator,
+#     ranked by minimal removing rank (fewer constraints wins). All estimated sink-free; the shared
+#     validator substitutes ALL patch tokens with h_clean[i] - Q_k Q_k^T d_i (sinks kept in the
+#     substitution) and finds the minimal k that removes the object under the sensitive direct probe.
+#     fisher (rank-1 DISCRIMINATIVE, Sw^-1(mu_obj-mu_bg) -- chosen for separation not variance, the
+#     contrast with the PCA-1 that failed); pls (multi-direction discriminative); svd (sink-free {d_i},
+#     variance-based); text (phi_T(obj)-phi_T(context) mapped to patch space, free). dog is the
+#     reference -- a construction that fails on dog is dead. Forward passes only, no optimization.
+uv run python subspace_oracle.py --dataset dataset.jsonl --objects dog --ks 0,1,2,3,5,8,10,15,22
+```
+
+Outputs land in `results/<stage>/`.
+
 ## What stage 3 measures
 
 - **Global**: CLS cosine between original/edited; image-text similarity deltas
